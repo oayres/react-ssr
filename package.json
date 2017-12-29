@@ -1,0 +1,40 @@
+{
+  "name": "react-cohere",
+  "version": "1.0.0",
+  "description": "The solution to server side rendering React applications.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "rollup --config config/rollup.config.js"
+  },
+  "keywords": [
+    "react",
+    "react",
+    "server",
+    "render",
+    "react",
+    "server-side",
+    "rendering"
+  ],
+  "author": "Owen Ayres",
+  "license": "MIT",
+  "dependencies": {
+    "rapscallion": "^2.1.14",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-config": "^1.0.0-beta.4",
+    "react-router-dom": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "rollup": "^0.53.0",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-includepaths": "^0.2.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  }
+}
