@@ -20,7 +20,8 @@
   <a href="https://codecov.io/github/oayres/react-cohere?branch=master">
     <img src="https://codecov.io/gh/oayres/react-cohere/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
   </a>
-  <b>Note that Cohere is not <i>quite</i> ready for production yet. Feel free to use it and open issues. It is actively under development.</b>
+  <br><br>
+  <b>Note that Cohere is not <i>quite</i> ready for production yet. <br> Feel free to use it and open issues. It is actively under development.</b>
 </p>
 
 ## Overview
