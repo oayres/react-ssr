@@ -1,8 +1,8 @@
 # react-cohere
 
 <p align="center">
-  <a href="https://travis-ci.org/rollup/rollup">
-    <img src="https://api.travis-ci.org/rollup/rollup.svg?branch=master"
+  <a href="https://travis-ci.org/oayres/react-cohere">
+    <img src="https://api.travis-ci.org/oayres/react-cohere.svg?branch=master"
          alt="build status">
   </a>
   <a href="https://www.npmjs.com/package/react-cohere">
@@ -24,7 +24,7 @@
 
 ## Overview
 
-Cohere, sometimes referred to as _react-cohere_, is an all-in-one solution to achieve server-side and static rendering of React applications in just a few lines of code. It uses its own basic set of principles that your application must follow to achieve this in the simplest possible way. Cohere aims to help make your routes _coherent_. By this, we mean each route will 'form a unified whole', meaning it will follow React Router v4's static routing to make any single route clear and singular to follow. Implementing these principles is what makes your app rapid to render. Everywhere.
+Cohere, sometimes referred to as _react-cohere_, is an all-in-one solution to achieve server-side and static rendering of React applications in just a few lines of code. Using its own basic set of principles, Cohere aims to help make your routes _coherent_, meaning each route is a defined entity. Implementing these principles is what makes your app rapid to render, everywhere.
 
 ## Installation
 
@@ -34,14 +34,14 @@ $ npm install react-cohere --save
 
 ## Usage
 
-Cohere has several different points of concern. Out of the box, it will server side render routes of your app. That's covered in basic usage. However, you may have dynamic data calls (calling an API) that determine the rendering of certain components. For example, you might not be able to render out a table of locations until you have called a Google Maps API and have the JSON available to your app. In these circumstances, Cohere will not server-side render your app out of the box correctly. Cohere provides a fluent api to extend your React components with for handling such scenarios. This is in advanced usage.
+Cohere has several different points of concern. Out of the box, it will server side render (SSR) routes of your app, but it may not do so asychronously without following our coherent principles. Basic usage will show you how to enable SSR synchronously. Advanced usage will provide an asynchronous example with API calls on the server.
 
 ### Basic usage
 
 The below example shows you a simple express server with an array of static routes that references two pages - both of which are React components returning some simple JSX.
 
+- Your Node JS express server
 `server.js`
-- Contains your Node JS express server
 ```js
 import express from 'express'
 import cohere from 'react-cohere'
@@ -53,8 +53,8 @@ const renderer = cohere({ routes })
 app.get('*', renderer) // send all routes to Cohere
 ```
 
+- Static routes of your React app
 `routes.js`
-- Contains your static routes for your React app
 ```js
 import HomePage from './HomePage'
 import NotFoundPage from './NotFoundPage'
@@ -82,6 +82,6 @@ export default routes
 
 ### Advanced usage
 
-So, you've got the app server-side rendering, but you need it to make data calls on the server, huh? We've got you covered.
+So, you've got the app server-side rendering, but you need it to make data calls on the server, huh? We've got you covered. Let's assume you have dynamic data calls (calling an API) that determine the rendering of certain components. For example, you might not be able to render out a table of locations until you have called a Google Maps API and have the JSON available to your app. In these circumstances, Cohere will not server-side render your app out of the box correctly. Cohere provides a fluent api to extend your React components with for handling such scenarios.
 
 
