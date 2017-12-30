@@ -9,5 +9,12 @@
   "plugins": [
     "transform-react-jsx",
     "transform-object-rest-spread"
-  ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        "env"
+      ]
+    }
+  }
 }

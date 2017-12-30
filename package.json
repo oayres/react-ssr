@@ -5,6 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
+    "test:cover": "jest --coverage",
+    "test:ci": "jest --coverage && codecov",
     "build": "rollup --config config/rollup.config.js"
   },
   "keywords": [
@@ -27,14 +29,52 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.1.2",
+    "babel-jest": "^22.0.4",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "codecov": "^3.0.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "jest": "^22.0.4",
     "rollup": "^0.53.0",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-includepaths": "^0.2.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^2.0.1"
+    "rollup-plugin-uglify": "^2.0.1",
+    "standard": "^10.0.3"
+  },
+  "standard": {
+    "globals": [
+      "expect",
+      "test",
+      "describe",
+      "it",
+      "beforeAll"
+    ],
+    "parser": "babel-eslint"
+  },
+  "jest": {
+    "setupFiles": [
+      "./config/jest.config.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/lib",
+      "<rootDir>/examples",
+      "<rootDir>/config"
+    ],
+    "verbose": true,
+    "modulePaths": [
+      "<rootDir>/src"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
   }
 }
