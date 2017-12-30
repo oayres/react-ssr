@@ -5,12 +5,12 @@
  * @returns {Promise} - returns a promise
  */
 const fetchData = (component, promises = []) => {
-  if (component.fetchDataForProps) {
+  if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
 
     promises.push(
       new Promise((resolve, reject) => {
-        const calls = component.fetchDataForProps()
+        const calls = component.fetchData()
         const keys = Object.keys(calls)
         const props = {}
 
