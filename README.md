@@ -86,4 +86,54 @@ export default routes
 
 So, you've got the app server-side rendering, but you need it to make data calls on the server, huh? We've got you covered. Let's assume you have dynamic data calls (calling an API) that determine the rendering of certain components. For example, you might not be able to render out a table of locations until you have called a Google Maps API and have the JSON available to your app. In these circumstances, Cohere will not server-side render your app out of the box correctly. Cohere provides a fluent api to extend your React components with for handling such scenarios.
 
+```js
+static fetchData () {
+  const pageContent = new Promise((resolve, reject) => {
+    fetch('/api')
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject)
+  })
 
+  return {
+    content: pageContent // becomes available as this.props.content
+  }
+}
+```
+
+### Static rendering
+
+Static rendering can be used to take a 'snapshot' of any given route in your React application that has fixed content and will display the same for every user. It works by caching the server-side rendered page into your provided caching layer (currently only Redis is supported). Subsequent requests will read the result directly from the cache to achieve almost instant delivery times.
+
+Cohere's static solution is in an early stage, but you can get great benefits very quickly for any static pages you may have. To make your page statically render, it's extremely simple. Just add `staticRender: true` to your route:
+
+`routes.js`
+```js
+import HomePage from './HomePage'
+import NotFoundPage from './NotFoundPage'
+
+const routes = [
+  {
+    path: '/',
+    exact: true,
+    component: HomePage,
+    staticRender: true // enables static rendering for homepage
+  },
+  {
+    path: '/about',
+    redirect: '/'
+  },
+  {
+    path: '**',
+    component: NotFoundPage
+  }
+]
+
+export default routes
+```
+
+By default, the cached page will be destroyed every 30 minutes. We're working on making this more configurable.
+
+## Contributing
+
+Feel free to open any issues for desired features or bugs. Pull requests are certainly welcome. This package is still in its infancy.
