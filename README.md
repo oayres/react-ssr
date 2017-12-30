@@ -132,8 +132,12 @@ const routes = [
 export default routes
 ```
 
-By default, the cached page will be destroyed every 30 minutes. We're working on making this more configurable.
+By default, the cached page will be destroyed every 30 minutes. It gets regenerated automatically when it is next requested from any single user. We're working on making this more configurable.
 
 ## Contributing
 
 Feel free to open any issues for desired features or bugs. Pull requests are certainly welcome. This package is still in its infancy.
+
+## License
+
+[MIT](https://github.com/oayres/react-cohere/blob/master/LICENSE.md)
