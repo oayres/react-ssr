@@ -1,7 +1,7 @@
 {
   "name": "react-cohere",
-  "version": "1.0.0",
-  "description": "The solution to server side rendering React applications.",
+  "version": "0.0.1",
+  "description": "The solution to server side and static rendering React applications.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
