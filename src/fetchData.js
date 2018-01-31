@@ -4,13 +4,13 @@
  * @param state - contains our state
  * @returns {Promise} - returns a promise
  */
-const fetchData = (component, promises = []) => {
+const fetchData = (component, params, promises = []) => {
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
 
     promises.push(
       new Promise((resolve, reject) => {
-        const calls = component.fetchData()
+        const calls = component.fetchData(params)
         const keys = Object.keys(calls)
         const props = {}
 
@@ -29,7 +29,7 @@ const fetchData = (component, promises = []) => {
 
   if (component.waitsFor) {
     component.waitsFor.forEach(childComponent => {
-      promises = fetchData(childComponent.type, promises)
+      promises = fetchData(childComponent.type, params, promises)
     })
   }
 

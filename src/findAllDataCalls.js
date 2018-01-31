@@ -1,12 +1,12 @@
 import fetchData from './fetchData'
 
-const findAllDataCalls = (matchedRoutes, url, state = {}) => {
+const findAllDataCalls = (matchedRoutes, state = {}, params = {}) => {
   let promises = matchedRoutes.map(({route}) => {
-    const fetchData = route.component.fetchData
+    const requiresData = route.component.fetchData
     const waitsFor = route.component.waitsFor
 
-    if (fetchData || waitsFor) {
-      return fetchData(route.component)
+    if (requiresData || waitsFor) {
+      return fetchData(route.component, params)
     }
   })
 

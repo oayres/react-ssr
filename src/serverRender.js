@@ -8,6 +8,13 @@ import matchRoute from './matchRoute'
 const docType = `<!DOCTYPE html>`
 
 const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient }, req, res) => {
+  const extensionRegex = /(?:\.([^.]+))?$/
+  const extension = extensionRegex.exec(req.url)[1]
+
+  if (extension) {
+    return res.sendStatus(404)
+  }
+
   const context = {}
   const state = {
     app: {
@@ -19,54 +26,38 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
   const { matchedRoutes, statusCode } = matchRoute(cleansedRoutes, req.url)
-  const { redirect, renderStatic, path } = matchedRoutes.length > 1 ? matchedRoutes[1].route : matchedRoutes[0].route
+  const { route = {}, match = {} } = matchedRoutes.length > 1 ? matchedRoutes[1] : matchedRoutes[0]
 
-  if (redirect) {
-    return res.redirect(redirect)
+  if (route.redirect) {
+    return res.redirect(route.redirect)
   }
 
-  if (renderStatic && redisClient) {
-    redisClient.exists(`cohere-${path}`)
-      .then(exists => {
-        if (exists) {
-          return redisClient.get(`cohere-${path}`)
-        } else {
-          ssr()
-        }
-      })
-      .then(content => {
-        console.info(content)
-        res.status(200).send(`${docType}${content}`)
-      })
-      .catch(error => {
-        console.warn('Error: ', error)
-        ssr()
-      })
-  }
+  const dataCalls = findAllDataCalls(matchedRoutes, state, match.params)
 
-  const ssr = () => {
-    const dataCalls = findAllDataCalls(matchedRoutes, state)
+  Promise.all(dataCalls)
+    .then(data => {
+      const fetchedProps = {}
 
-    Promise.all(dataCalls)
-      .then(data => {
-        const content = ReactDOMServer.renderToStaticMarkup(
-          <Html state={state}>
-            <StaticRouter location={req.url} context={context}>
-              {renderRoutes(cleansedRoutes)}
-            </StaticRouter>
-          </Html>
-        )
-  
-        if (renderStatic && redisClient) {
-          redisClient.set(`cohere-${path}`, content)
-        }
-  
-        res.status(statusCode).send(`${docType}${content}`)
+      data.map(component => {
+        const name = component._displayName
+        fetchedProps[name] = component.defaultProps
       })
-      .catch(err => {
-        res.status(400).send(`400: An error has occurred: ${err}`)
-      })
-  }
+
+      state._dataFromServerRender = fetchedProps
+
+      const stream = ReactDOMServer.renderToString(
+        <Html state={state}>
+          <StaticRouter location={req.url} context={context}>
+            {renderRoutes(cleansedRoutes)}
+          </StaticRouter>
+        </Html>
+      )
+
+      res.status(statusCode).send(`${docType}${stream}`)
+    })
+    .catch(err => {
+      res.status(400).send(`400: An error has occurred: ${err}`)
+    })
 }
 
 export default serverRender
