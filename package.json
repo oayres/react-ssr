@@ -21,11 +21,7 @@
   "author": "Owen Ayres",
   "license": "MIT",
   "dependencies": {
-    "rapscallion": "^2.1.14",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router-config": "^1.0.0-beta.4",
-    "react-router-dom": "^4.2.2"
+    
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -40,12 +36,21 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.0.4",
     "rollup": "^0.53.0",
+    "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-includepaths": "^0.2.2",
     "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-peer-deps-external": "^2.0.0",
     "rollup-plugin-uglify": "^2.0.1",
     "standard": "^10.0.3"
+  },
+  "peerDependencies": {
+    "mobx-react": "^4.3.5",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-config": "^1.0.0-beta.4",
+    "react-router-dom": "^4.2.2"
   },
   "standard": {
     "globals": [
