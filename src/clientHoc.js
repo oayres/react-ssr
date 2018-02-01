@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router'
-import DefaultLoadingSpinner from './LoadingSpinner'
+// import DefaultLoadingSpinner from './components/LoadingSpinner'
 
 const cohere = DecoratedComponent => {
   const fetchData = (params = {}) => {
@@ -23,27 +23,27 @@ const cohere = DecoratedComponent => {
     })
   }
 
-  return withRouter(class _decoratedForServerRender extends DecoratedComponent {
-    static _displayName = DecoratedComponent.name
-
+  class _decoratedForServerRender extends DecoratedComponent {
     constructor (props) {
       super(props)
+      this.recallFetchData = false
       this.state = {
         fetched: false
       }
     }
 
-    componentWillReceiveProps () {
-      /**
-       * Check if route has params
-       * If params have changed, this.recallFetchData = true
-       * Params need to be passed into fetchData
-       */
+    componentWillReceiveProps (nextProps) {
+      if (nextProps) {
+        const { params = {} } = this.props.match
+
+        if (Object.keys(params).length > 0 && params !== nextProps.params) {
+          this.setState({ fetched: false })
+        }
+      }
     }
 
     render () {
-      const LoadingSpinner = this.props.loadingSpinner || DefaultLoadingSpinner
-      let recallFetchData = false
+      // const LoadingSpinner = this.props.loadingSpinner || DefaultLoadingSpinner
 
       if (!this.state.fetched && typeof window !== 'undefined') {
         /**
@@ -56,7 +56,7 @@ const cohere = DecoratedComponent => {
           if (props) {
             // this.props = {...this.props, ...props}
             DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
-            recallFetchData = false
+            this.recallFetchData = false
           }
         }
 
@@ -66,7 +66,7 @@ const cohere = DecoratedComponent => {
         if (DecoratedComponent.propsForServerRender) {
           DecoratedComponent.propsForServerRender.forEach(key => {
             if (!DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined') {
-              recallFetchData = true
+              this.recallFetchData = true
             }
           })
         }
@@ -74,7 +74,7 @@ const cohere = DecoratedComponent => {
         /**
          * Stage 3: Call to fetch the data as not found...
          */
-        if (recallFetchData) {
+        if (this.recallFetchData) {
           fetchData(this.props.match.params)
             .then(props => {
               DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
@@ -89,13 +89,17 @@ const cohere = DecoratedComponent => {
             return null
           }
 
-          return <LoadingSpinner />
+          return <span>Loading...</span>
+          // return <LoadingSpinner />
         }
       }
 
       return <DecoratedComponent {...this.props} />
     }
-  })
+  }
+
+  _decoratedForServerRender._displayName = DecoratedComponent.name
+  return withRouter(_decoratedForServerRender)
 }
 
 export default cohere
