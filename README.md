@@ -1,46 +1,43 @@
-# react-cohere
+# react-ssr
 
 <p align="center">
-  <a href="https://travis-ci.org/oayres/react-cohere">
-    <img src="https://api.travis-ci.org/oayres/react-cohere.svg?branch=master"
+  <a href="https://travis-ci.org/oayres/react-ssr">
+    <img src="https://api.travis-ci.org/oayres/react-ssr.svg?branch=master"
          alt="build status">
   </a>
-  <a href="https://www.npmjs.com/package/react-cohere">
-    <img src="https://img.shields.io/npm/v/react-cohere.svg"
+  <a href="https://www.npmjs.com/package/react-ssr">
+    <img src="https://img.shields.io/npm/v/react-ssr.svg"
          alt="npm version">
   </a>
-  <a href="https://github.com/oayres/react-cohere/blob/master/LICENSE.md">
-    <img src="https://img.shields.io/npm/l/react-cohere.svg"
+  <a href="https://github.com/oayres/react-ssr/blob/master/LICENSE.md">
+    <img src="https://img.shields.io/npm/l/react-ssr.svg"
          alt="license">
   </a>
-  <a href="https://david-dm.org/oayres/react-cohere">
-    <img src="https://david-dm.org/oayres/react-cohere/status.svg"
+  <a href="https://david-dm.org/oayres/react-ssr">
+    <img src="https://david-dm.org/oayres/react-ssr/status.svg"
          alt="dependency status">
   </a>
-  <a href="https://codecov.io/github/oayres/react-cohere?branch=master">
-    <img src="https://codecov.io/gh/oayres/react-cohere/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
+  <a href="https://codecov.io/github/oayres/react-ssr?branch=master">
+    <img src="https://codecov.io/gh/oayres/react-ssr/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
   </a>
   <br><br>
-  <b>Note that Cohere is not <i>quite</i> ready for production yet. <br> Feel free to use it and open issues. It is actively under development.</b>
+  <b>Note that `react-ssr` has not made it to a production-ready state yet. It's nearly there!</b>
 </p>
 
 ## Overview
 
-Cohere, sometimes referred to as _react-cohere_, is an all-in-one solution to achieve server-side and static rendering of React applications in just a few lines of code. Using its own basic set of principles, Cohere aims to help make your routes _coherent_, meaning each route is a defined entity. Implementing these principles is what makes your app rapid to render, everywhere.
+`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple ruleset. The simple ruleset is outlined with performance in mind, and must be followed to server side render React apps effectively.
 
 ## Installation
 
 ```sh
-$ npm install react-cohere --save
+$ npm install react-ssr --save
+$ npm install babel-plugin-react-ssr --save-dev
 ```
 
-## Usage
+## Adding to your server
 
-Cohere has several different points of concern. Out of the box, it will server side render (SSR) routes of your app, but it may not do so asychronously without following our coherent principles. Basic usage will show you how to enable SSR synchronously. Advanced usage will provide an asynchronous example with API calls on the server.
-
-### Basic usage
-
-The below example shows you a simple express server with an array of static routes that references two pages - both of which are React components returning some simple JSX.
+Firstly, you'll need to use the module on your Node server and have some static routes of your app setup. The below example uses express:
 
 - Your Node JS express server
 `server.js`
@@ -80,30 +77,34 @@ const routes = [
 export default routes
 ```
 
-🏆 You should now have server-side rendering setup. There's still a few extra things to think about to make this work for more advanced applications. Continue reading to find out more.
+## Fetching data
 
-### Advanced usage
+There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need to use a special method for this. It's a static method that sits in your React component called `fetchData`. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
 
-So, you've got the app server-side rendering, but you need it to make data calls on the server, huh? We've got you covered. Let's assume you have dynamic data calls (calling an API) that determine the rendering of certain components. For example, you might not be able to render out a table of locations until you have called a Google Maps API and have the JSON available to your app. In these circumstances, Cohere will not server-side render your app out of the box correctly. Cohere provides a fluent api to extend your React components with for handling such scenarios.
+Here's an example:
 
 ```js
-static fetchData () {
-  const pageContent = new Promise((resolve, reject) => {
-    fetch('/api')
-      .then(res => res.json())
-      .then(resolve)
-      .catch(reject)
-  })
+class Navigation extends React.Component {
+  static fetchData () {
+    const pageContent = new Promise((resolve, reject) => {
+      fetch('/api')
+        .then(res => res.json())
+        .then(resolve)
+        .catch(reject)
+    })
 
-  return {
-    content: pageContent // becomes available as this.props.content
+    return {
+      content: pageContent // becomes available as this.props.content
+    }
   }
-}
+
+  render () {
+    console.log()
+    return <span />
+  }
 ```
 
-## Contributing
-
-Feel free to open any issues for desired features or bugs. Pull requests are certainly welcome. This package is still in its infancy.
+🏆 You should now have server-side rendering setup. There's still a few extra things to think about to make this work for more advanced applications. Continue reading to find out more.
 
 ## License
 
