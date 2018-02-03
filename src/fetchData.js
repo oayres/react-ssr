@@ -27,9 +27,11 @@ const fetchData = (component, params, promises = []) => {
     )
   }
 
-  if (component.waitsFor) {
-    component.waitsFor.forEach(childComponent => {
-      promises = fetchData(childComponent.type, params, promises)
+  if (component._ssrWaitsFor) {
+    component._ssrWaitsFor.forEach(childComponent => {
+      if (childComponent.type || childComponent.WrappedComponent) {
+        promises = fetchData(childComponent.type || childComponent.WrappedComponent, params, promises)
+      }
     })
   }
 
