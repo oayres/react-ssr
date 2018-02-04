@@ -109,3 +109,7 @@ class Navigation extends React.Component {
 ## License
 
 [MIT](https://github.com/oayres/react-ssr/blob/master/LICENSE.md)
+
+## Not what you were expecting?
+
+This package has recently changed from a previous solution by akiran. You can find his work here: https://github.com/akiran/react-ssr
