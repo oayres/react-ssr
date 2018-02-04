@@ -21,7 +21,7 @@
     <img src="https://codecov.io/gh/oayres/react-ssr/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
   </a>
   <br><br>
-  <b>Note that `react-ssr` has not made it to a production-ready state yet. It's nearly there!</b>
+  <b>Note that react-ssr has not made it to a production-ready state yet. It's nearly there!</b>
 </p>
 
 ## Overview
@@ -43,13 +43,13 @@ Firstly, you'll need to use the module on your Node server and have some static 
 `server.js`
 ```js
 import express from 'express'
-import cohere from 'react-cohere'
+import ssr from 'react-ssr'
 import routes from './routes'
 
 const app = express()
-const renderer = cohere({ routes })
+const renderer = ssr({ routes })
 
-app.get('*', renderer) // send all routes to Cohere
+app.get('*', renderer) // send all routes to ssr
 ```
 
 - Static routes of your React app
@@ -99,7 +99,7 @@ class Navigation extends React.Component {
   }
 
   render () {
-    console.log()
+    console.log(this.props.content)
     return <span />
   }
 ```
@@ -108,4 +108,4 @@ class Navigation extends React.Component {
 
 ## License
 
-[MIT](https://github.com/oayres/react-cohere/blob/master/LICENSE.md)
+[MIT](https://github.com/oayres/react-ssr/blob/master/LICENSE.md)

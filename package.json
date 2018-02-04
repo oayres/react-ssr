@@ -1,7 +1,7 @@
 {
-  "name": "react-cohere",
-  "version": "0.0.2",
-  "description": "The solution to server side and static rendering React applications.",
+  "name": "react-ssr",
+  "version": "0.2.0",
+  "description": "A simplified solution to server side rendering React applications.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -22,9 +22,7 @@
   ],
   "author": "Owen Ayres",
   "license": "MIT",
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
@@ -52,7 +50,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-config": "^1.0.0-beta.4",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "react-helmet": "^5.2.0"
   },
   "standard": {
     "globals": [
