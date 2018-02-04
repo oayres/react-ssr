@@ -16,13 +16,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
   }
 
   const context = {}
-  const state = {
-    app: {
-      title: 'Test',
-      description: 'example desc'
-    }
-  }
-
+  const state = {}
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
   const { matchedRoutes, statusCode } = matchRoute(cleansedRoutes, req.url)
