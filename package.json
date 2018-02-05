@@ -21,6 +21,10 @@
     "rendering"
   ],
   "author": "Owen Ayres",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oayres/react-ssr"
+  },
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
