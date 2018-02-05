@@ -35,6 +35,15 @@ $ npm install react-ssr --save
 $ npm install babel-plugin-react-ssr --save-dev
 ```
 
+Add the babel plugin to your `.babelrc`
+```json
+{
+  "plugins": [
+    "react-ssr"
+  ]
+}
+```
+
 ## Adding to your server
 
 Firstly, you'll need to use the module on your Node server and have some static routes of your app setup. The below example uses express:
@@ -106,10 +115,23 @@ class Navigation extends React.Component {
 
 🏆 You should now have server-side rendering setup. There's still a few extra things to think about to make this work for more advanced applications. Continue reading to find out more.
 
-## License
+## Some caveats and notes
 
-[MIT](https://github.com/oayres/react-ssr/blob/master/LICENSE.md)
+At the moment there are a few caveats you'll need to consider for server side rendering with these static methods. Some of them will have to remain, whereas others will slowly be improved in future releases.
+
+- You can't access `this` inside your static `fetchData`. This means you cannot access `this.props`, so no props-driven data call here. If you want to achieve this, you'll need to chain api calls together in a parent container, wrapped in one promise, then pass the result into the child component as standard props.
+- You **can** access `params` inside your static `fetchData`. The params of your React route are available as an argument to the method. `static fetchData (params) {}`
+- You _must_ return an object with keys in your static `fetchData`. This API won't be finalised until the first major release.
+- You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
+- The static `fetchData` methods will only work on React components that are classes currently. Functional components are not yet supported.
+- You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
+
+The documentation for this solution is still actively under writing. Further info with accompanying diagrams to visualise the approach to server-side rendering will follow soon.
 
 ## Not what you were expecting?
 
 This package has recently changed from a previous solution by akiran. You can find his work here: https://github.com/akiran/react-ssr
+
+## License
+
+[MIT](https://github.com/oayres/react-ssr/blob/master/LICENSE.md)
