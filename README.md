@@ -125,6 +125,12 @@ At the moment there are a few caveats you'll need to consider for server side re
 - You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
 - The static `fetchData` methods will only work on React components that are classes currently. Functional components are not yet supported.
 - You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
+- Components not directly defined in the `render` method might not server side render yet. This is changing in an immediate minor release to follow - won't be long!
+- Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
+```jsx
+const DynamicComponent = components['MyComponent']
+return <DynamicComponent />
+```
 
 The documentation for this solution is still actively under writing. Further info with accompanying diagrams to visualise the approach to server-side rendering will follow soon.
 
