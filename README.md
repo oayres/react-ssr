@@ -1,28 +1,22 @@
 # react-ssr
 
-<p align="center">
-  <a href="https://travis-ci.org/oayres/react-ssr">
-    <img src="https://api.travis-ci.org/oayres/react-ssr.svg?branch=master"
-         alt="build status">
-  </a>
-  <a href="https://www.npmjs.com/package/react-ssr">
-    <img src="https://img.shields.io/npm/v/react-ssr.svg"
-         alt="npm version">
-  </a>
-  <a href="https://github.com/oayres/react-ssr/blob/master/LICENSE.md">
-    <img src="https://img.shields.io/npm/l/react-ssr.svg"
-         alt="license">
-  </a>
-  <a href="https://david-dm.org/oayres/react-ssr">
-    <img src="https://david-dm.org/oayres/react-ssr/status.svg"
-         alt="dependency status">
-  </a>
-  <a href="https://codecov.io/github/oayres/react-ssr?branch=master">
-    <img src="https://codecov.io/gh/oayres/react-ssr/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
-  </a>
-  <br><br>
-  <b>Note that react-ssr has not made it to a production-ready state yet. It's nearly there!</b>
-</p>
+<a href="https://travis-ci.org/oayres/react-ssr">
+  <img src="https://api.travis-ci.org/oayres/react-ssr.svg?branch=master" alt="build status">
+</a>
+<a href="https://www.npmjs.com/package/react-ssr">
+  <img src="https://img.shields.io/npm/v/react-ssr.svg" alt="npm version">
+</a>
+<a href="https://github.com/oayres/react-ssr/blob/master/LICENSE.md">
+  <img src="https://img.shields.io/npm/l/react-ssr.svg" alt="license">
+</a>
+<a href="https://david-dm.org/oayres/react-ssr">
+  <img src="https://david-dm.org/oayres/react-ssr/status.svg" alt="dependency status">
+</a>
+<a href="https://codecov.io/github/oayres/react-ssr?branch=master">
+  <img src="https://codecov.io/gh/oayres/react-ssr/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
+</a>
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+<br>
 
 ## Overview
 
