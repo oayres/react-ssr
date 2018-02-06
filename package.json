@@ -38,7 +38,13 @@
     "codecov": "^3.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.1",
     "jest": "^22.0.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-helmet": "^5.2.0",
+    "react-router-config": "^1.0.0-beta.4",
+    "react-router-dom": "^4.2.2",
     "rollup": "^0.53.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.3",
@@ -47,19 +53,14 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-peer-deps-external": "^2.0.0",
     "rollup-plugin-uglify": "^2.0.1",
-    "standard": "^10.0.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router-config": "^1.0.0-beta.4",
-    "react-router-dom": "^4.2.2",
-    "react-helmet": "^5.2.0"
+    "standard": "^10.0.3"
   },
   "peerDependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-helmet": "^5.2.0",
     "react-router-config": "^1.0.0-beta.4",
-    "react-router-dom": "^4.2.2",
-    "react-helmet": "^5.2.0"
+    "react-router-dom": "^4.2.2"
   },
   "standard": {
     "globals": [
@@ -67,7 +68,10 @@
       "test",
       "describe",
       "it",
-      "beforeAll"
+      "beforeAll",
+      "shallow",
+      "mount",
+      "snapshot"
     ],
     "parser": "babel-eslint"
   },
