@@ -15,7 +15,9 @@
 <a href="https://codecov.io/github/oayres/react-ssr?branch=master">
   <img src="https://codecov.io/gh/oayres/react-ssr/branch/master/graph/badge.svg" alt="Coverage via Codecov" />
 </a>
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+<a href="https://standardjs.com">
+  <img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="JavaScript Style Guide" />
+</a>
 <br>
 
 ## Overview
