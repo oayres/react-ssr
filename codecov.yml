@@ -1,0 +1,5 @@
+ignore:
+  - "index.js"
+  - "examples"
+  - "config"
+  - "node_modules"
