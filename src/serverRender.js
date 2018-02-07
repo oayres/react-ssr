@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 import { matchRoutes, renderRoutes } from 'react-router-config'
 import DefaultTemplate from './components/DefaultTemplate'
-import findAllDataCalls from './helpers/indAllDataCalls'
+import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
 
 const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient }, req, res) => {
