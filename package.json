@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A simplified solution to server side rendering React applications.",
   "main": "lib/index.js",
   "scripts": {
