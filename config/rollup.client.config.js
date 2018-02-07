@@ -6,7 +6,7 @@ import includePaths from 'rollup-plugin-includepaths'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 
 export default {
-  input: 'src/clientHoc.js',
+  input: 'src/decorators/ssrFetchData.js',
   output: {
     name: 'cohere-fetch-data',
     file: 'lib/fetchData.js',
