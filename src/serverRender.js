@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
-import { renderRoutes } from 'react-router-config'
+import { matchRoutes, renderRoutes } from 'react-router-config'
 import DefaultTemplate from './components/DefaultTemplate'
-import findAllDataCalls from './findAllDataCalls'
-import matchRoute from './matchRoute'
+import findAllDataCalls from './helpers/indAllDataCalls'
+import matchRoute from './helpers/matchRoute'
 
 const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient }, req, res) => {
   const extensionRegex = /(?:\.([^.]+))?$/
@@ -18,7 +18,8 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
   const state = {}
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
-  const { matchedRoutes, statusCode } = matchRoute(cleansedRoutes, req.url)
+  const matchesFromReactRouter = matchRoutes(cleansedRoutes, req.url)
+  const { matchedRoutes, statusCode } = matchRoute(matchesFromReactRouter)
   const { route = {}, match = {} } = matchedRoutes.length > 1 ? matchedRoutes[1] : matchedRoutes[0]
 
   if (route.redirect) {

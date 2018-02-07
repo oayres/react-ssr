@@ -1,4 +1,4 @@
-import fetchData from './fetchData'
+import fetchData from '../fetchData'
 
 const findAllDataCalls = (matchedRoutes, state = {}, params = {}) => {
   let promises = matchedRoutes.map(({route}) => {

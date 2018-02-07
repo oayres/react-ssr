@@ -1,7 +1,4 @@
-import { matchRoutes } from 'react-router-config'
-
-const matchRoute = (routes, url) => {
-  let matchedRoutes = matchRoutes(routes, url)
+const matchRoute = (matchedRoutes = []) => {
   let statusCode = 200
   let redirect
 
