@@ -2,10 +2,9 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 import { renderRoutes } from 'react-router-config'
-import DefaultTemplate from './DefaultTemplate'
+import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './findAllDataCalls'
 import matchRoute from './matchRoute'
-const docType = `<!DOCTYPE html>`
 
 const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient }, req, res) => {
   const extensionRegex = /(?:\.([^.]+))?$/
@@ -39,7 +38,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
 
       state._dataFromServerRender = fetchedProps
 
-      const stream = ReactDOMServer.renderToString(
+      const app = ReactDOMServer.renderToString(
         <Html state={state}>
           <StaticRouter location={req.url} context={context}>
             {renderRoutes(cleansedRoutes)}
@@ -47,7 +46,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
         </Html>
       )
 
-      res.status(statusCode).send(`${docType}${stream}`)
+      res.status(statusCode).send(`<!DOCTYPE html>${app}`)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)

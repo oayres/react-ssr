@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DefaultTemplate renders without exploding 1`] = `
+<html
+  lang="en-gb"
+>
+  <head>
+    <title
+      data-react-helmet={true}
+    />
+    <meta
+      charSet="utf-8"
+    />
+    <meta
+      content="IE=edge"
+      httpEquiv="X-UA-Compatible"
+    />
+    <meta
+      content="width=device-width, initial-scale=1"
+      name="viewport"
+    />
+    <meta
+      content="yes"
+      name="mobile-web-app-capable"
+    />
+    <link
+      href="/assets/styles.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/favicon.ico"
+      rel="icon"
+      type="image/x-icon"
+    />
+    <script
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": undefined,
+        }
+      }
+    />
+  </head>
+  <body>
+    <div
+      id="root"
+    />
+    <script
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "window.__STATE = undefined;",
+        }
+      }
+    />
+    <script
+      src="/assets/bundle.js"
+    />
+  </body>
+</html>
+`;

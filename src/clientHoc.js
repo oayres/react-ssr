@@ -1,7 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner'
-// import DefaultLoadingSpinner from './components/LoadingSpinner'
 
 const cohere = DecoratedComponent => {
   const fetchAllData = (params = {}) => {
