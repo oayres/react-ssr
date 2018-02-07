@@ -92,7 +92,8 @@
       "<rootDir>/src"
     ],
     "collectCoverageFrom": [
-      "src/**/*.js"
+      "src/**/*.js",
+      "!src/**/index.js"
     ]
   }
 }

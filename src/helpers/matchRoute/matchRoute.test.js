@@ -14,3 +14,9 @@ test('matchedRoutes in response is of type array by default', () => {
   const result = matchRoute()
   expect(Array.isArray(result.matchedRoutes)).toBeTruthy()
 })
+
+test('sets the status code to 404 when the path is **', () => {
+  const dummyRoute = [{}, {route: {path: '**'}}]
+  const result = matchRoute(dummyRoute)
+  expect(result.statusCode).toBe(404)
+})

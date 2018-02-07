@@ -1,5 +1,5 @@
 ignore:
-  - "index.js"
+  - "src/**/index.js"
   - "examples"
   - "config"
   - "node_modules"

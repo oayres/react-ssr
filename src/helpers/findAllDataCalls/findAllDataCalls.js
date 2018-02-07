@@ -1,6 +1,6 @@
 import fetchData from '../fetchData'
 
-const findAllDataCalls = (matchedRoutes, state = {}, params = {}) => {
+const findAllDataCalls = (matchedRoutes = [], state = {}, params = {}) => {
   let promises = matchedRoutes.map(({route}) => {
     const requiresData = route.component.fetchData
     const _ssrWaitsFor = route.component._ssrWaitsFor

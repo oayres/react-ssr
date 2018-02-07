@@ -1,8 +1,8 @@
 import React from 'react'
 import { withRouter } from 'react-router'
-import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner'
+import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 
-const cohere = DecoratedComponent => {
+const ssrFetchData = DecoratedComponent => {
   const fetchAllData = (params = {}) => {
     return new Promise((resolve, reject) => {
       const calls = DecoratedComponent.fetchData(params)
@@ -75,7 +75,7 @@ const cohere = DecoratedComponent => {
 
     extractFromWindow () {
       if (typeof window !== 'undefined') {
-        const { _dataFromServerRender = {} } = window.__STATE
+        const { _dataFromServerRender = {} } = window.__STATE || {}
         const props = _dataFromServerRender[DecoratedComponent.name]
 
         if (props) {
@@ -129,4 +129,4 @@ const cohere = DecoratedComponent => {
   return withRouter(_decoratedForServerRender)
 }
 
-export default cohere
+export default ssrFetchData
