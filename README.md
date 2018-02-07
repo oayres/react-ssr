@@ -22,7 +22,7 @@
 
 ## Overview
 
-`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple ruleset. The simple ruleset is outlined with performance in mind, and must be followed to server side render React apps effectively.
+`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple ruleset. The simple ruleset is outlined with performance in mind, and must be followed to server side render React apps effectively. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls where-ever you want.
 
 ## Installation
 
