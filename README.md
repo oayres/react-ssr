@@ -90,7 +90,8 @@ Here's an example:
 
 ```js
 class Navigation extends React.Component {
-  static fetchData () {
+  static fetchData (params) {
+    // params is an object of params from the matched React route
     const pageContent = new Promise((resolve, reject) => {
       fetch('/api')
         .then(res => res.json())
@@ -116,7 +117,6 @@ class Navigation extends React.Component {
 At the moment there are a few caveats you'll need to consider for server side rendering with these static methods. Some of them will have to remain, whereas others will slowly be improved in future releases.
 
 - You can't access `this` inside your static `fetchData`. This means you cannot access `this.props`, so no props-driven data call here. If you want to achieve this, you'll need to chain api calls together in a parent container, wrapped in one promise, then pass the result into the child component as standard props.
-- You **can** access `params` inside your static `fetchData`. The params of your React route are available as an argument to the method. `static fetchData (params) {}`
 - You _must_ return an object with keys in your static `fetchData`. This API won't be finalised until the first major release.
 - You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
 - The static `fetchData` methods will only work on React components that are classes currently. Functional components are not yet supported.
