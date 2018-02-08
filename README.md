@@ -22,7 +22,7 @@
 
 ## Overview
 
-`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple ruleset. The simple ruleset is outlined with performance in mind, and must be followed to server side render React apps effectively. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls where-ever you want.
+`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple ruleset. The simple ruleset is outlined with performance in mind, and must be followed to server side render React apps effectively. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls at a component level.
 
 ## Installation
 
@@ -121,7 +121,12 @@ At the moment there are a few caveats you'll need to consider for server side re
 - You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
 - The static `fetchData` methods will only work on React components that are classes currently. Functional components are not yet supported.
 - You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
-- Components not directly defined in the `render` method might not server side render yet. This is changing in an immediate minor release to follow - won't be long!
+- Components not directly defined in the `render` method might not server side render yet (but will instead client-side). This is changing in an immediate minor release to follow - won't be long!
+- Components with a static fetchData wrapped in certain higher order components may not server-side render correctly yet due to a known bug - also changing asap.
+- Your React component _must_ have an export default at the bottom in this exact format for now, without being wrapped by anything:
+```jsx
+export default MyComponentName
+```
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
 ```jsx
 const DynamicComponent = components['MyComponent']
