@@ -62,10 +62,13 @@ const ssrFetchData = DecoratedComponent => {
       }
     }
 
-    checkIfAlreadyAssignedToDefaultProps () {
+    checkIfAlreadyInProps () {
       if (DecoratedComponent._ssrProps) {
         DecoratedComponent._ssrProps.forEach(key => {
-          if (!DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined') {
+          const alreadyHasProp = typeof this.props[key] !== 'undefined'
+          const notInDefaultProps = !DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined'
+
+          if (!alreadyHasProp && notInDefaultProps) {
             this.recallFetchData = true
             this.loaderRequired = true
           }
@@ -96,9 +99,9 @@ const ssrFetchData = DecoratedComponent => {
         this.extractFromWindow()
 
         /**
-         * Stage 2: See if data is now, or previously was, in defaultProps
+         * Stage 2: See if data is now, or previously was, in props or defaultProps
          */
-        this.checkIfAlreadyAssignedToDefaultProps()
+        this.checkIfAlreadyInProps()
 
         /**
          * Stage 3: Call to fetch the data as not found...
