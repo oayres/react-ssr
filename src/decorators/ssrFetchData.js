@@ -1,25 +1,51 @@
+import 'regenerator-runtime/runtime.js'
 import React from 'react'
 import { withRouter } from 'react-router'
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 
 const ssrFetchData = DecoratedComponent => {
   const fetchAllData = (params = {}) => {
-    return new Promise((resolve, reject) => {
-      const calls = DecoratedComponent.fetchData(params)
-      const keys = Object.keys(calls)
+    return new Promise(async (resolve, reject) => {
+      const fetch = DecoratedComponent.fetchData(params)
       const props = {}
 
-      Promise.all(Object.values(calls))
-        .then(responses => {
-          responses.forEach((data, index) => {
-            props[keys[index]] = data
-          })
+      try {
+        const response = await fetch()
+        const keys = Object.keys(response)
+        keys.forEach((data, index) => {
+          props[keys[index]] = data
+        })
 
-          resolve(props)
-        })
-        .catch(error => {
-          reject(error)
-        })
+        resolve(props)
+      } catch (e) {
+        reject(e)
+      }
+
+      // if (Promise.resolve(fetch) === fetch) {
+      //   const keys = Object.keys(fetch)
+
+      //   Promise.all(Object.values(fetch))
+      //     .then(responses => {
+      //       responses.forEach((data, index) => {
+      //         props[keys[index]] = data
+      //       })
+
+      //       resolve(props)
+      //     })
+      //     .catch(reject)
+      // } else {
+      //   fetch()
+      //     .then(response => {
+      //       console.info(response)
+      //       const keys = Object.keys(response)
+      //       keys.forEach((data, index) => {
+      //         props[keys[index]] = data
+      //       })
+
+      //       resolve(props)
+      //     })
+      //     .catch(reject)
+      // }
     })
   }
 

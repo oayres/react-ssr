@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "0.2.6",
+  "version": "0.4.0-alpha.2",
   "description": "A simplified solution to server side rendering React applications.",
   "main": "lib/index.js",
   "scripts": {
@@ -26,7 +26,9 @@
     "url": "https://github.com/oayres/react-ssr"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "regenerator": "^0.12.3"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",

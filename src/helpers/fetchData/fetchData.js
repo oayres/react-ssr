@@ -9,20 +9,38 @@ const fetchData = (component, params, promises = []) => {
     component.defaultProps = component.defaultProps || {}
 
     promises.push(
-      new Promise((resolve, reject) => {
-        const calls = component.fetchData(params)
-        const keys = Object.keys(calls)
+      new Promise(async (resolve, reject) => {
+        const fetch = component.fetchData(params)
         const props = {}
 
-        Promise.all(Object.values(calls))
-          .then(responses => {
-            responses.forEach((data, index) => {
-              props[keys[index]] = data
-            })
-
-            component.defaultProps = { ...component.defaultProps, ...props }
-            resolve(component)
+        try {
+          console.log('Awaiting a fetch for component', component.name || component.displayName || component._displayName || 'compoennt..')
+          const response = await fetch()
+          const keys = Object.keys(response)
+          keys.forEach((data, index) => {
+            props[keys[index]] = data
           })
+
+          resolve(props)
+        } catch (e) {
+          reject(e)
+        }
+        // if (Promise.resolve(fetch) === fetch) {
+
+        // } else {
+        //   const keys = Object.keys(fetch)
+
+        //   Promise.all(Object.values(fetch))
+        //     .then(responses => {
+        //       responses.forEach((data, index) => {
+        //         props[keys[index]] = data
+        //       })
+
+        //       component.defaultProps = { ...component.defaultProps, ...props }
+        //       resolve(component)
+        //     })
+        //     .catch(reject)
+        // }
       })
     )
   }

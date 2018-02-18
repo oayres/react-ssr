@@ -5,6 +5,8 @@ const findAllDataCalls = (matchedRoutes = [], state = {}, params = {}) => {
     const requiresData = route.component.fetchData
     const _ssrWaitsFor = route.component._ssrWaitsFor
 
+    console.info('Mapping route.. ', requiresData, _ssrWaitsFor)
+
     if (requiresData || _ssrWaitsFor) {
       return fetchData(route.component, params)
     }

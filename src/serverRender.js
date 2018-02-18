@@ -27,6 +27,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
   }
 
   const dataCalls = findAllDataCalls(matchedRoutes, state, match.params)
+  console.info('Data calls for route: ', dataCalls)
 
   Promise.all(dataCalls)
     .then(data => {
