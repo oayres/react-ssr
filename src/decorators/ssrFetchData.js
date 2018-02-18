@@ -9,43 +9,32 @@ const ssrFetchData = DecoratedComponent => {
       const fetch = DecoratedComponent.fetchData(params)
       const props = {}
 
-      try {
-        const response = await fetch()
-        const keys = Object.keys(response)
-        keys.forEach((data, index) => {
-          props[keys[index]] = data
-        })
+      if (Promise.resolve(fetch) === fetch) {
+        try {
+          const response = await fetch
+          const keys = Object.keys(response)
 
-        resolve(props)
-      } catch (e) {
-        reject(e)
+          keys.forEach((data, index) => {
+            props[keys[index]] = data
+          })
+
+          resolve(props)
+        } catch (e) {
+          reject(e)
+        }
+      } else {
+        const keys = Object.keys(fetch)
+
+        Promise.all(Object.values(fetch))
+          .then(responses => {
+            responses.forEach((data, index) => {
+              props[keys[index]] = data
+            })
+
+            resolve(props)
+          })
+          .catch(reject)
       }
-
-      // if (Promise.resolve(fetch) === fetch) {
-      //   const keys = Object.keys(fetch)
-
-      //   Promise.all(Object.values(fetch))
-      //     .then(responses => {
-      //       responses.forEach((data, index) => {
-      //         props[keys[index]] = data
-      //       })
-
-      //       resolve(props)
-      //     })
-      //     .catch(reject)
-      // } else {
-      //   fetch()
-      //     .then(response => {
-      //       console.info(response)
-      //       const keys = Object.keys(response)
-      //       keys.forEach((data, index) => {
-      //         props[keys[index]] = data
-      //       })
-
-      //       resolve(props)
-      //     })
-      //     .catch(reject)
-      // }
     })
   }
 

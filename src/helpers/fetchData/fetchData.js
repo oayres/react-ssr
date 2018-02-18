@@ -13,34 +13,34 @@ const fetchData = (component, params, promises = []) => {
         const fetch = component.fetchData(params)
         const props = {}
 
-        try {
-          console.log('Awaiting a fetch for component', component.name || component.displayName || component._displayName || 'compoennt..')
-          const response = await fetch()
-          const keys = Object.keys(response)
-          keys.forEach((data, index) => {
-            props[keys[index]] = data
-          })
+        if (Promise.resolve(fetch) === fetch) {
+          try {
+            console.log('Awaiting a fetch for component', component.name || component.displayName || component._displayName || 'component..')
+            const response = await fetch
+            const keys = Object.keys(response)
+            console.info('Resolved a fetch.')
+            keys.forEach((data, index) => {
+              props[keys[index]] = data
+            })
 
-          resolve(props)
-        } catch (e) {
-          reject(e)
+            resolve(props)
+          } catch (e) {
+            reject(e)
+          }
+        } else {
+          const keys = Object.keys(fetch)
+
+          Promise.all(Object.values(fetch))
+            .then(responses => {
+              responses.forEach((data, index) => {
+                props[keys[index]] = data
+              })
+
+              component.defaultProps = { ...component.defaultProps, ...props }
+              resolve(component)
+            })
+            .catch(reject)
         }
-        // if (Promise.resolve(fetch) === fetch) {
-
-        // } else {
-        //   const keys = Object.keys(fetch)
-
-        //   Promise.all(Object.values(fetch))
-        //     .then(responses => {
-        //       responses.forEach((data, index) => {
-        //         props[keys[index]] = data
-        //       })
-
-        //       component.defaultProps = { ...component.defaultProps, ...props }
-        //       resolve(component)
-        //     })
-        //     .catch(reject)
-        // }
       })
     )
   }
