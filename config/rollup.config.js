@@ -8,7 +8,7 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 export default {
   input: 'src/index.js',
   output: {
-    name: 'react-cohere',
+    name: 'react-ssr',
     file: 'lib/index.js',
     format: 'umd'
   },
