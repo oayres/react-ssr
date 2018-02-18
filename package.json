@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "0.4.0-alpha.5",
+  "version": "0.4.0-alpha.6",
   "description": "A simplified solution to server side rendering React applications.",
   "main": "lib/index.js",
   "scripts": {
