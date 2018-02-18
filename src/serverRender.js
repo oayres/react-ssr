@@ -6,7 +6,12 @@ import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
 
-const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient }, req, res) => {
+const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient, disable }, req, res) => {
+  if (disable) {
+    const html = ReactDOMServer.renderToString(<Html />)
+    return res.send(`<!DOCTYPE html>${html}`)
+  }
+
   const extensionRegex = /(?:\.([^.]+))?$/
   const extension = extensionRegex.exec(req.url)[1]
 
@@ -25,6 +30,8 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
   if (route.redirect) {
     return res.redirect(route.redirect)
   }
+
+  console.info('Got my routes... ', matchedRoutes)
 
   const dataCalls = findAllDataCalls(matchedRoutes, state, match.params)
   console.info('Data calls for route: ', dataCalls)

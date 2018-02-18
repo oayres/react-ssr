@@ -135,6 +135,19 @@ return <DynamicComponent />
 
 The documentation for this solution is still actively under writing. Further info with accompanying diagrams to visualise the approach to server-side rendering will follow soon.
 
+## Options
+
+Everything you can pass into react-ssr like so:
+```js
+const options = { routes: [], disable: false, ...etc }
+const renderer = ssr(options)
+```
+
+| Option        | Description                           | Required | Default |
+| ------------- | ------------------------------------- | -------- | ------- |
+| routes        | static routes array of your react app | yes      | []      |
+| disable       | disables server-side rendering        | no       | false   |
+
 ## Not what you were expecting?
 
 This package has recently changed from a previous solution by akiran. You can find his work here: https://github.com/akiran/react-ssr
