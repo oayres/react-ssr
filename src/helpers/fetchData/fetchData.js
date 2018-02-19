@@ -5,8 +5,12 @@
  * @returns {Promise} - returns a promise
  */
 const fetchData = (component, params, promises = []) => {
+  console.info('Looping over a component... ', component.displayName || component._displayName || component.name || 'no name')
+
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
+
+    console.info('Found a fetchData on it.')
 
     promises.push(
       new Promise(async (resolve, reject) => {
@@ -23,7 +27,8 @@ const fetchData = (component, params, promises = []) => {
               props[keys[index]] = data
             })
 
-            resolve(props)
+            component.defaultProps = { ...component.defaultProps, ...props }
+            resolve(component)
           } catch (e) {
             reject(e)
           }
@@ -46,6 +51,8 @@ const fetchData = (component, params, promises = []) => {
   }
 
   if (component._ssrWaitsFor) {
+    console.info('Found an _ssrWaitsFor on it.')
+
     component._ssrWaitsFor.forEach(childComponent => {
       if (childComponent.type || childComponent.WrappedComponent) {
         promises = fetchData(childComponent.type || childComponent.WrappedComponent, params, promises)
