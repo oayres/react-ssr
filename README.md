@@ -71,7 +71,7 @@ const routes = [
   },
   {
     path: '/about',
-    redirect: '/'
+    redirectTo: '/'
   },
   {
     path: '**',
@@ -89,18 +89,18 @@ There's one important rule: If you want to make a data call, and you'd like it t
 Here's an example:
 
 ```js
-class Navigation extends React.Component {
-  static fetchData (params) {
-    // params is an object of params from the matched React route
-    const pageContent = new Promise((resolve, reject) => {
-      fetch('/api')
-        .then(res => res.json())
-        .then(resolve)
-        .catch(reject)
-    })
+const pageContent = () => new Promise((resolve, reject) => {
+  fetch('/api')
+    .then(res => res.json())
+    .then(resolve)
+    .catch(reject)
+})
 
+class Navigation extends React.Component {
+  static fetchData ({params, req}) {
+    // params is an object of params from the matched React route
     return {
-      content: pageContent // becomes available as this.props.content
+      content: pageContent() // becomes available as this.props.content
     }
   }
 
@@ -110,13 +110,14 @@ class Navigation extends React.Component {
   }
 ```
 
-🏆 You should now have server-side rendering setup. There's still a few extra things to think about to make this work for more advanced applications. Continue reading to find out more.
+🏆 You should now have server-side rendering setup.
 
 ## Notes
 
 There's a few things to consider here. Since data fetching occurs before rendering begins, you'll have these points to deal with:
 
 - You can't access `this` inside your static `fetchData`. Chain API calls together in parent components if they are dependent.
+- You must use static routes. Dynamic routing (react router v4) takes place as your app is rendering, but this has huge performance implications for server side rendering. So, we must have a static set of routes that we can match against before rendering begins.
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
 ```jsx
 const DynamicComponent = components['MyComponent']
@@ -125,9 +126,8 @@ return <DynamicComponent />
 
 Also, there's a couple of caveats for now. We're working on them:
 
-- You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
-- You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
-- Your React components _must_ must be an export default, higher order components should be wrapped with decorators:
+- Only tested with React Router v4 static routing for now. v3 or less support will likely be added soon. Ultimately we recommend you upgrade
+- Your React components _must_ must be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
 ```jsx
 @myDecorator
 class MyComponentName extends Component {}
@@ -135,24 +135,12 @@ class MyComponentName extends Component {}
 export default MyComponentName
 ```
 
-The documentation for this solution is still actively under writing. Further info with accompanying diagrams to visualise the approach to server-side rendering will follow soon.
-
 ## Options
-
-Everything you can pass into react-ssr like so:
-```js
-const options = { routes: [], disable: false, ...etc }
-const renderer = ssr(options)
-```
 
 | Option        | Description                           | Required | Default |
 | ------------- | ------------------------------------- | -------- | ------- |
 | routes        | static routes array of your react app | yes      | []      |
 | disable       | disables server-side rendering        | no       | false   |
-
-## Not what you were expecting?
-
-This package has recently changed from a previous solution by akiran. You can find his work here: https://github.com/akiran/react-ssr
 
 ## License
 
