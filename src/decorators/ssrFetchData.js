@@ -6,6 +6,10 @@ import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 const ssrFetchData = DecoratedComponent => {
   const fetchAllData = (params = {}) => {
     return new Promise(async (resolve, reject) => {
+      if (typeof DecoratedComponent.fetchData !== 'function') {
+        return reject(new Error('Fetch data not defined or not a function.'))
+      }
+
       const fetch = DecoratedComponent.fetchData(params)
       const keys = Object.keys(fetch) || []
       const props = {}
