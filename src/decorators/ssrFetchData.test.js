@@ -12,7 +12,7 @@ test('renders without exploding', () => {
   const Component = ssrFetchData(Test)
   const wrapper = mount(
     <StaticRouter context={{}}>
-      <Component />
+      <Component match={{}} />
     </StaticRouter>
   )
 
