@@ -112,25 +112,27 @@ class Navigation extends React.Component {
 
 🏆 You should now have server-side rendering setup. There's still a few extra things to think about to make this work for more advanced applications. Continue reading to find out more.
 
-## Some caveats and notes
+## Notes
 
-At the moment there are a few caveats you'll need to consider for server side rendering with these static methods. Some of them will have to remain, whereas others will slowly be improved in future releases.
+There's a few things to consider here. Since data fetching occurs before rendering begins, you'll have these points to deal with:
 
-- You can't access `this` inside your static `fetchData`. This means you cannot access `this.props`, so no props-driven data call here. If you want to achieve this, you'll need to chain api calls together in a parent container, wrapped in one promise, then pass the result into the child component as standard props.
-- You _must_ return an object with keys in your static `fetchData`. This API won't be finalised until the first major release.
-- You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
-- The static `fetchData` methods will only work on React components that are classes currently. Functional components are not yet supported.
-- You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
-- Components not directly defined in the `render` method might not server side render yet (but will instead client-side). This is changing in an immediate minor release to follow - won't be long!
-- Components with a static fetchData wrapped in certain higher order components may not server-side render correctly yet due to a known bug - also changing asap.
-- Your React component _must_ have an export default at the bottom in this exact format for now, without being wrapped by anything:
-```jsx
-export default MyComponentName
-```
+- You can't access `this` inside your static `fetchData`. Chain API calls together in parent components if they are dependent.
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
 ```jsx
 const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
+```
+
+Also, there's a couple of caveats for now. We're working on them:
+
+- You _must_ use static routes of your app currently. You might be able to define them how you want in future releases.
+- You have to use Babel so the plugin can work some magic. This might not be required in the future. If it still is, we'll consider adding Typescript transformers and any other alternative requirements.
+- Your React components _must_ must be an export default, higher order components should be wrapped with decorators:
+```jsx
+@myDecorator
+class MyComponentName extends Component {}
+
+export default MyComponentName
 ```
 
 The documentation for this solution is still actively under writing. Further info with accompanying diagrams to visualise the approach to server-side rendering will follow soon.
