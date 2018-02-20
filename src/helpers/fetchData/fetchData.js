@@ -5,26 +5,22 @@
  * @returns {Promise} - returns a promise
  */
 const fetchData = (component, params, promises = []) => {
-  console.info('Looping over a component... ', component.displayName || component._displayName || component.name || 'no name')
-
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
-
-    console.info('Found a fetchData on it.')
 
     promises.push(
       new Promise(async (resolve, reject) => {
         const fetch = component.fetchData(params)
+        const keys = Object.keys(fetch) || []
         const props = {}
 
-        if (Promise.resolve(fetch) === fetch) {
+        if (!keys.length) {
           try {
-            console.log('Awaiting a fetch for component', component.name || component.displayName || component._displayName || 'component..')
             const response = await fetch
-            const keys = Object.keys(response)
-            console.info('Resolved a fetch.')
-            keys.forEach((data, index) => {
-              props[keys[index]] = data
+            const updatedKeys = Object.keys(response)
+
+            updatedKeys.forEach((key, index) => {
+              props[key] = response[key]
             })
 
             component.defaultProps = { ...component.defaultProps, ...props }
@@ -33,8 +29,6 @@ const fetchData = (component, params, promises = []) => {
             reject(e)
           }
         } else {
-          const keys = Object.keys(fetch)
-
           Promise.all(Object.values(fetch))
             .then(responses => {
               responses.forEach((data, index) => {
@@ -51,12 +45,10 @@ const fetchData = (component, params, promises = []) => {
   }
 
   if (component._ssrWaitsFor) {
-    console.info('Found an _ssrWaitsFor on it.')
-
     component._ssrWaitsFor.forEach(childComponent => {
-      if (childComponent.type || childComponent.WrappedComponent) {
-        promises = fetchData(childComponent.type || childComponent.WrappedComponent, params, promises)
-      }
+      console.info('In a child component ', childComponent, childComponent.WrappedComponent)
+
+      promises = fetchData(childComponent || childComponent.WrappedComponent, params, promises)
     })
   }
 

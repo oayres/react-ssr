@@ -7,15 +7,16 @@ const ssrFetchData = DecoratedComponent => {
   const fetchAllData = (params = {}) => {
     return new Promise(async (resolve, reject) => {
       const fetch = DecoratedComponent.fetchData(params)
+      const keys = Object.keys(fetch) || []
       const props = {}
 
-      if (Promise.resolve(fetch) === fetch) {
+      if (keys.length) {
         try {
           const response = await fetch
-          const keys = Object.keys(response)
+          const updatedKeys = Object.keys(response)
 
-          keys.forEach((data, index) => {
-            props[keys[index]] = data
+          updatedKeys.forEach((key, index) => {
+            props[key] = response[key]
           })
 
           resolve(props)
@@ -23,8 +24,6 @@ const ssrFetchData = DecoratedComponent => {
           reject(e)
         }
       } else {
-        const keys = Object.keys(fetch)
-
         Promise.all(Object.values(fetch))
           .then(responses => {
             responses.forEach((data, index) => {
@@ -38,13 +37,16 @@ const ssrFetchData = DecoratedComponent => {
     })
   }
 
+  @withRouter
   class _decoratedForServerRender extends React.Component {
-    componentWillMount () {
-      if (!this.state || typeof this.state.fetched !== 'undefined') {
-        this.recallFetchData = false
-        this.loaderRequired = false
-        this.setState({ fetched: false })
+    constructor (props) {
+      super(props)
+      this.state = {
+        fetched: false
       }
+
+      this.recallFetchData = false
+      this.loaderRequired = false
     }
 
     componentWillReceiveProps (nextProps) {
@@ -57,16 +59,13 @@ const ssrFetchData = DecoratedComponent => {
       }
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-      return nextState.fetched
-    }
-
     fetchData () {
       if (this.recallFetchData) {
         this.loaderRequired = true
 
         fetchAllData(this.props.match.params)
           .then(props => {
+            DecoratedComponent._ssrProps = Object.keys(props)
             DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
             this.setState({ fetched: true })
           })
@@ -79,6 +78,9 @@ const ssrFetchData = DecoratedComponent => {
 
     checkIfAlreadyInProps () {
       if (DecoratedComponent._ssrProps) {
+        this.recallFetchData = false
+        this.loaderRequired = false
+
         DecoratedComponent._ssrProps.forEach(key => {
           const alreadyHasProp = typeof this.props[key] !== 'undefined'
           const notInDefaultProps = !DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined'
@@ -88,18 +90,22 @@ const ssrFetchData = DecoratedComponent => {
             this.loaderRequired = true
           }
         })
+      } else {
+        this.recallFetchData = true
+        this.loaderRequired = true
       }
     }
 
     extractFromWindow () {
       if (typeof window !== 'undefined') {
         const { _dataFromServerRender = {} } = window.__STATE || {}
-        const props = _dataFromServerRender[DecoratedComponent.name]
+        const props = _dataFromServerRender[DecoratedComponent.displayName]
 
         if (props) {
           DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
-          this.recallFetchData = false
-          this.loaderRequired = false
+        } else {
+          this.recallFetchData = true
+          this.loaderRequired = true
         }
       }
     }
@@ -108,20 +114,12 @@ const ssrFetchData = DecoratedComponent => {
       // const LoadingSpinner = this.props.loadingSpinner || DefaultLoadingSpinner
 
       if (!this.state.fetched && typeof window !== 'undefined') {
-        /**
-         * Stage 1: See if it's in the window state...
-         */
         this.extractFromWindow()
 
-        /**
-         * Stage 2: See if data is now, or previously was, in props or defaultProps
-         */
-        this.checkIfAlreadyInProps()
-
-        /**
-         * Stage 3: Call to fetch the data as not found...
-         */
-        this.fetchData()
+        if (this.recallFetchData) {
+          this.checkIfAlreadyInProps()
+          this.fetchData()
+        }
       } else if (typeof window === 'undefined') {
         this.loaderRequired = false // on server...
       }
@@ -137,14 +135,14 @@ const ssrFetchData = DecoratedComponent => {
     }
   }
 
-  // may not be needed...
+  /** Defines what JSX components we need to fetchData for */
   _decoratedForServerRender._ssrWaitsFor = DecoratedComponent._ssrWaitsFor
-  _decoratedForServerRender._ssrProps = DecoratedComponent._ssrProps
+  /** Unique name for this component, to use for checking on window state */
+  _decoratedForServerRender.displayName = DecoratedComponent.displayName
+  /** Make the static fetchData method available, pass through, as HOCs lose statics */
   _decoratedForServerRender.fetchData = DecoratedComponent.fetchData
-  // end of may not be needed
 
-  _decoratedForServerRender._displayName = DecoratedComponent.name
-  return withRouter(_decoratedForServerRender)
+  return _decoratedForServerRender
 }
 
 export default ssrFetchData

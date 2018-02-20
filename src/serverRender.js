@@ -31,17 +31,14 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
     return res.redirect(route.redirect)
   }
 
-  console.info('Got my routes... ', matchedRoutes)
-
   const dataCalls = findAllDataCalls(matchedRoutes, state, match.params)
-  console.info('Data calls for route: ', dataCalls)
 
   Promise.all(dataCalls)
     .then(data => {
       const fetchedProps = {}
 
       data.map(component => {
-        const name = component._displayName
+        const name = component.displayName
         fetchedProps[name] = component.defaultProps
       })
 
