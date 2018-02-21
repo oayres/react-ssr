@@ -114,7 +114,7 @@ class Navigation extends React.Component {
 
 🏆 You should now have server-side rendering setup.
 
--
+
 
 **Unless you chose not to install the babel plugin**. Raise an issue if you'd like an alternative to the babel plugin. Anyway, without it, here's what you'll need to do:
 
