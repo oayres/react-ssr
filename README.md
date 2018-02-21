@@ -148,10 +148,11 @@ export default fetchData(variableWithUniqueName)
 
 ## Options
 
-| Option        | Description                                  | Required | Default   |
-| ------------- | -------------------------------------        | -------- | --------- |
-| routes        | static routes array of your react app        | yes      | []        |
-| disable       | disables server-side rendering               | no       | false     |
+| Option        | Description                                  | Required | Default                                    |
+| ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
+| routes        | static routes array of your react app        | yes      | []                                         |
+| disable       | disables server-side rendering               | no       | false                                      |
+| Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
 
 ## License
 
