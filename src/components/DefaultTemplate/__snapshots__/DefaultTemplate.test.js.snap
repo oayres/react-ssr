@@ -5,9 +5,6 @@ exports[`DefaultTemplate renders without exploding 1`] = `
   lang="en-gb"
 >
   <head>
-    <title
-      data-react-helmet={true}
-    />
     <meta
       charSet="utf-8"
     />

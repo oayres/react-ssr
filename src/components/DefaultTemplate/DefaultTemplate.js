@@ -1,20 +1,30 @@
 import React from 'react'
-import Helmet from 'react-helmet'
 
 class Html extends React.Component {
   render () {
-    const helmet = Helmet.renderStatic()
-    const htmlAttrs = helmet.htmlAttributes.toComponent()
-    const bodyAttrs = helmet.bodyAttributes.toComponent()
     const state = this.props.state
     const injectedState = `window.__STATE = ${JSON.stringify(state)};`
+    let { title, meta, link, bodyAttrs, htmlAttrs } = this.props.document
+
+    try {
+      const Helmet = require('react-helmet')
+      const helmet = Helmet.renderStatic()
+      title = title || helmet.title.toComponent()
+      meta = meta || helmet.meta.toComponent()
+      link = link || helmet.link.toComponent()
+      htmlAttrs = htmlAttrs || helmet.htmlAttributes.toComponent()
+      bodyAttrs = bodyAttrs || helmet.bodyAttributes.toComponent()
+    } catch (e) {
+      // Helmet wasn't given to us...
+      // for now, we'll silently skip
+    }
 
     return (
       <html lang='en-gb' {...htmlAttrs}>
         <head>
-          {helmet.title.toComponent()}
-          {helmet.meta.toComponent()}
-          {helmet.link.toComponent()}
+          {title}
+          {meta}
+          {link}
           <meta charSet='utf-8' />
           <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
           <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -32,6 +42,10 @@ class Html extends React.Component {
       </html>
     )
   }
+}
+
+Html.defaultProps = {
+  document: {}
 }
 
 export default Html
