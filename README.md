@@ -112,11 +112,11 @@ class Navigation extends React.Component {
   }
 ```
 
-🏆 You should now have server-side rendering setup.
+🏆 You should now have server-side rendering setup. **Unless you chose not to install the babel plugin**. Keep reading if you haven't used the babel plugin.
 
+## Without babel plugin
 
-
-**Unless you chose not to install the babel plugin**. Raise an issue if you'd like an alternative to the babel plugin. Anyway, without it, here's what you'll need to do:
+Raise an issue if you'd like an alternative to the babel plugin. Anyway, without it, here's what you'll need to do:
 
 - Any component with a static fetchData must be wrapped at the bottom with our higher order component:
 ```jsx
