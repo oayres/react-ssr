@@ -28,10 +28,12 @@
 
 ```sh
 $ npm install react-ssr --save
-$ npm install babel-plugin-react-ssr --save-dev
 ```
 
-Add the babel plugin to your `.babelrc`. _Recommended_.
+We recommend you use the babel plugin too. Add the babel plugin to your `.babelrc`.
+```sh
+$ npm install babel-plugin-react-ssr --save-dev
+```
 ```json
 {
   "plugins": [
@@ -110,7 +112,40 @@ class Navigation extends React.Component {
   }
 ```
 
-🏆 You should now have server-side rendering setup.
+🏆 You should now have server-side rendering setup. Unless you chose not to install the babel plugin. In which case, continue reading.
+
+No Babel, huh? Raise an issue if you'd like an alternative to the babel plugin. Anyway, without it, here's what you'll need to do.
+
+- Any component with a static fetchData must be wrapped at the bottom with our higher order component:
+```jsx
+import ssrFetchData from 'react-ssr/lib/fetchData'
+
+class MyComponent extends React.Component {
+  static fetchData () {}
+}
+
+export default ssrFetchData(MyComponent)
+```
+
+- Your route/page/top-level components should have a waitsFor static array containing components required for fetchData calls, e.g:
+```jsx
+class MyPage extends React.Component {
+  render () {
+    return (
+      <Example />
+    )
+  }
+}
+
+MyPage._ssrWaitsFor = [
+  Example,
+  SomeOtherChildWithStaticFetchData
+]
+
+export default MyPage
+```
+
+And your done.
 
 ## Notes
 
