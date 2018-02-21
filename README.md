@@ -31,7 +31,7 @@ $ npm install react-ssr --save
 $ npm install babel-plugin-react-ssr --save-dev
 ```
 
-Add the babel plugin to your `.babelrc`. This is currently **required**.
+Add the babel plugin to your `.babelrc`. _Recommended_.
 ```json
 {
   "plugins": [
