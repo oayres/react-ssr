@@ -2,44 +2,45 @@ import 'regenerator-runtime/runtime.js'
 import React from 'react'
 import { withRouter } from 'react-router'
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
+import { executeFetchData } from '../helpers/fetchData/fetchData'
 
 const ssrFetchData = DecoratedComponent => {
-  const fetchAllData = (params = {}) => {
-    return new Promise(async (resolve, reject) => {
-      if (typeof DecoratedComponent.fetchData !== 'function') {
-        return reject(new Error('Fetch data not defined or not a function.'))
-      }
+  // const fetchAllData = (params = {}) => {
+  //   return new Promise(async (resolve, reject) => {
+  //     if (typeof DecoratedComponent.fetchData !== 'function') {
+  //       return reject(new Error('Fetch data not defined or not a function.'))
+  //     }
 
-      const fetch = DecoratedComponent.fetchData(params)
-      const keys = Object.keys(fetch) || []
-      const props = {}
+  //     const fetch = DecoratedComponent.fetchData(params)
+  //     const keys = Object.keys(fetch) || []
+  //     const props = {}
 
-      if (keys.length) {
-        try {
-          const response = await fetch
-          const updatedKeys = Object.keys(response)
+  //     if (!keys.length) {
+  //       try {
+  //         const response = await fetch
+  //         const updatedKeys = Object.keys(response)
 
-          updatedKeys.forEach((key, index) => {
-            props[key] = response[key]
-          })
+  //         updatedKeys.forEach((key, index) => {
+  //           props[key] = response[key]
+  //         })
 
-          resolve(props)
-        } catch (e) {
-          reject(e)
-        }
-      } else {
-        Promise.all(Object.values(fetch))
-          .then(responses => {
-            responses.forEach((data, index) => {
-              props[keys[index]] = data
-            })
+  //         resolve(props)
+  //       } catch (e) {
+  //         reject(e)
+  //       }
+  //     } else {
+  //       Promise.all(keys.map(key => fetch[key]))
+  //         .then(responses => {
+  //           responses.forEach((data, index) => {
+  //             props[keys[index]] = data
+  //           })
 
-            resolve(props)
-          })
-          .catch(reject)
-      }
-    })
-  }
+  //           resolve(props)
+  //         })
+  //         .catch(reject)
+  //     }
+  //   })
+  // }
 
   @withRouter
   class _decoratedForServerRender extends React.Component {
@@ -67,10 +68,10 @@ const ssrFetchData = DecoratedComponent => {
       if (this.recallFetchData) {
         this.loaderRequired = true
 
-        fetchAllData(this.props.match.params)
-          .then(props => {
-            DecoratedComponent._ssrProps = Object.keys(props)
-            DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
+        executeFetchData(DecoratedComponent, this.props.match.params)
+          .then(componentWithData => {
+            // DecoratedComponent._ssrProps = Object.keys(props)
+            DecoratedComponent.defaultProps = componentWithData.defaultProps
             this.setState({ fetched: true })
           })
           .catch(error => {
@@ -80,25 +81,25 @@ const ssrFetchData = DecoratedComponent => {
       }
     }
 
-    checkIfAlreadyInProps () {
-      if (DecoratedComponent._ssrProps) {
-        this.recallFetchData = false
-        this.loaderRequired = false
+    // checkIfAlreadyInProps () {
+    //   if (DecoratedComponent._ssrProps) {
+    //     this.recallFetchData = false
+    //     this.loaderRequired = false
 
-        DecoratedComponent._ssrProps.forEach(key => {
-          const alreadyHasProp = typeof this.props[key] !== 'undefined'
-          const notInDefaultProps = !DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined'
+    //     DecoratedComponent._ssrProps.forEach(key => {
+    //       const alreadyHasProp = typeof this.props[key] !== 'undefined'
+    //       const notInDefaultProps = !DecoratedComponent.defaultProps || typeof DecoratedComponent.defaultProps[key] === 'undefined'
 
-          if (!alreadyHasProp && notInDefaultProps) {
-            this.recallFetchData = true
-            this.loaderRequired = true
-          }
-        })
-      } else {
-        this.recallFetchData = true
-        this.loaderRequired = true
-      }
-    }
+    //       if (!alreadyHasProp && notInDefaultProps) {
+    //         this.recallFetchData = true
+    //         this.loaderRequired = true
+    //       }
+    //     })
+    //   } else {
+    //     this.recallFetchData = true
+    //     this.loaderRequired = true
+    //   }
+    // }
 
     extractFromWindow () {
       if (typeof window !== 'undefined') {
@@ -120,8 +121,7 @@ const ssrFetchData = DecoratedComponent => {
       if (!this.state.fetched && typeof window !== 'undefined') {
         this.extractFromWindow()
 
-        if (this.recallFetchData) {
-          this.checkIfAlreadyInProps()
+        if (this.recallFetchData && !this.props.disableFetchData) {
           this.fetchData()
         }
       } else if (typeof window === 'undefined') {
