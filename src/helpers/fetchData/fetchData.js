@@ -28,7 +28,7 @@ const executeFetchData = (component, params) => {
         reject(e)
       }
     } else {
-      Promise.all(Object.values(fetch))
+      Promise.all(keys.map(key => fetch[key]))
         .then(responses => {
           responses.forEach((data, index) => {
             props[keys[index]] = data
@@ -63,4 +63,5 @@ const fetchData = (component, params, promises = []) => {
   return promises
 }
 
+export { executeFetchData }
 export default fetchData
