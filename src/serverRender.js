@@ -6,7 +6,7 @@ import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
 
-const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClient, disable }, req, res) => {
+const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, LoadingSpinner }, req, res) => {
   if (disable) {
     const html = ReactDOMServer.renderToString(<Html />)
     return res.send(`<!DOCTYPE html>${html}`)
@@ -31,7 +31,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
     return res.redirect(route.redirect)
   }
 
-  const dataCalls = findAllDataCalls(matchedRoutes, state, match.params)
+  const dataCalls = findAllDataCalls(matchedRoutes, state, match, req)
 
   Promise.all(dataCalls)
     .then(data => {
@@ -43,6 +43,10 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, redisClien
       })
 
       state._dataFromServerRender = fetchedProps
+
+      if (LoadingSpinner) {
+        state.loadingSpinner = LoadingSpinner
+      }
 
       const app = ReactDOMServer.renderToString(
         <Html state={state}>
