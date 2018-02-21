@@ -97,7 +97,7 @@ const pageContent = () => new Promise((resolve, reject) => {
 })
 
 class Navigation extends React.Component {
-  static fetchData ({params, req}) {
+  static fetchData ({req, match}) {
     // params is an object of params from the matched React route
     return {
       content: pageContent() // becomes available as this.props.content
@@ -127,6 +127,7 @@ return <DynamicComponent />
 Also, there's a couple of caveats for now. We're working on them:
 
 - Only tested with React Router v4 static routing for now. v3 or less support will likely be added soon. Ultimately we recommend you upgrade
+- Untested on anything but flat routes currently (about to move onto nested)
 - Your React components _must_ must be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
 ```jsx
 @myDecorator
@@ -134,13 +135,23 @@ class MyComponentName extends Component {}
 
 export default MyComponentName
 ```
+There is a way to avoid the above if you absolutely must. There are rare cases where you can't use the decorator, or you might just not be in a position to use them for some reason. Import the HOC manually and define it like below, ensuring you use a unique variable name for the wrapped instance (even if you use the babel plugin, it will see this and skip it):
+```jsx
+import fetchData from 'react-ssr/lib/fetchData'
+import { observer } from 'mobx-react'
+
+class MyComponent extends Component {}
+
+const variableWithUniqueName = observer(MyComponent)
+export default fetchData(variableWithUniqueName)
+```
 
 ## Options
 
-| Option        | Description                           | Required | Default |
-| ------------- | ------------------------------------- | -------- | ------- |
-| routes        | static routes array of your react app | yes      | []      |
-| disable       | disables server-side rendering        | no       | false   |
+| Option        | Description                                  | Required | Default   |
+| ------------- | -------------------------------------        | -------- | --------- |
+| routes        | static routes array of your react app        | yes      | []        |
+| disable       | disables server-side rendering               | no       | false     |
 
 ## License
 
