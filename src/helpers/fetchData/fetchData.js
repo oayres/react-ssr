@@ -3,13 +3,13 @@
  * @param {*} component - component with fetchData method/promose
  * @param {*} params - params of matched route to pass to fetchData
  */
-const executeFetchData = (component, params) => {
+const executeFetchData = (component, match, req) => {
   return new Promise(async (resolve, reject) => {
     if (typeof component.fetchData !== 'function') {
       return reject(new Error('Fetch data not defined or not a function.'))
     }
 
-    const fetch = component.fetchData(params)
+    const fetch = component.fetchData({match, req})
     const keys = Object.keys(fetch || {}) || []
     const props = {}
 
@@ -48,15 +48,15 @@ const executeFetchData = (component, params) => {
  * @param params - contains our state
  * @returns {Array} promises - returns an array of promises, each a fetchData
  */
-const fetchData = (component, params, promises = []) => {
+const fetchData = (component, match, req, promises = []) => {
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
-    promises.push(executeFetchData(component, params))
+    promises.push(executeFetchData(component, match, req))
   }
 
   if (component._ssrWaitsFor) {
     component._ssrWaitsFor.forEach(childComponent => {
-      promises = fetchData(childComponent || childComponent.WrappedComponent, params, promises)
+      promises = fetchData(childComponent || childComponent.WrappedComponent, match, req, promises)
     })
   }
 
