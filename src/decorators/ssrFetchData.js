@@ -1,7 +1,6 @@
-import 'regenerator-runtime/runtime.js'
 import React from 'react'
 import { withRouter } from 'react-router'
-import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
+import DefaultLoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import { executeFetchData } from '../helpers/fetchData/fetchData'
 
 const ssrFetchData = DecoratedComponent => {
@@ -59,7 +58,12 @@ const ssrFetchData = DecoratedComponent => {
     }
 
     render () {
-      // const LoadingSpinner = this.props.loadingSpinner || DefaultLoadingSpinner
+      let LoadingSpinner = DefaultLoadingSpinner
+
+      if (typeof window !== 'undefined') {
+        const { loadingSpinner } = window.__STATE || {}
+        LoadingSpinner = loadingSpinner || LoadingSpinner
+      }
 
       if (!this.state.fetched && typeof window !== 'undefined') {
         this.extractFromWindow()
@@ -76,7 +80,7 @@ const ssrFetchData = DecoratedComponent => {
       return (
         <span>
           {showLoader && <LoadingSpinner />}
-          <DecoratedComponent {...this.props} />
+          <DecoratedComponent {...this.props} loading={!this.state.fetched && this.loaderRequired} />
         </span>
       )
     }
