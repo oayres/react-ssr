@@ -61,8 +61,7 @@ const ssrFetchData = DecoratedComponent => {
       let LoadingSpinner = DefaultLoadingSpinner
 
       if (typeof window !== 'undefined') {
-        const { loadingSpinner } = window.__STATE || {}
-        LoadingSpinner = loadingSpinner || LoadingSpinner
+        LoadingSpinner = window.ssrLoadingSpinner || LoadingSpinner
       }
 
       if (!this.state.fetched && typeof window !== 'undefined') {
