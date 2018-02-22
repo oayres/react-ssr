@@ -110,7 +110,7 @@ class Navigation extends React.Component {
   }
 ```
 
-🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**.
+🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**
 
 ## Without babel plugin
 
