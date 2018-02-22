@@ -86,10 +86,9 @@ export default routes
 
 ## Fetching data
 
-There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need to use a special method for this. It's a static method that sits in your React component called `fetchData`. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
+There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need a static `fetchData` method. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
 
-Here's an example:
-
+Here's an example (note to use inline static syntax, you need another babel plugin, you can just do `Navigation.fetchData` otherwise):
 ```js
 const pageContent = () => new Promise((resolve, reject) => {
   fetch('/api')
@@ -112,7 +111,7 @@ class Navigation extends React.Component {
   }
 ```
 
-🏆 You should now have server-side rendering setup. **Unless you chose not to install the babel plugin**. Keep reading if you haven't used the babel plugin.
+🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**.
 
 ## Without babel plugin
 
@@ -161,10 +160,8 @@ const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
 ```
 
-Also, there's a couple of caveats for now. We're working on them:
+Also, here's a known caveat with this package you'll need to consider for now:
 
-- Only tested with React Router v4 static routing for now. v3 or less support will likely be added soon. Ultimately we recommend you upgrade
-- Untested on anything but flat routes currently (about to move onto nested)
 - Your React components _must_ must be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
 ```jsx
 @myDecorator
@@ -190,6 +187,21 @@ export default fetchData(variableWithUniqueName)
 | routes        | static routes array of your react app        | yes      | []                                         |
 | disable       | disables server-side rendering               | no       | false                                      |
 | Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
+
+## Contributing
+
+This package is still early doors. Please do get involved, feel free to critique it, offer solutions that can change its approach slightly, or request examples on how you want to use it. Is your thing missing on the below to do? Raise an issue. Pull requests welcome. 👌
+
+To-do:
+
+- [ ] Test with nested (child) static routes
+- [ ] Allow overriding the default loading spinner
+- [ ] Disable loading spinner prop
+- [ ] Add a this.props.loading prop to fetchData components
+- [ ] Disable fetchData prop (client-side only)
+- [ ] Improve the export default caveat
+- [ ] Sample usage repo with MobX
+- [ ] Sample usage repo with Redux
 
 ## License
 
