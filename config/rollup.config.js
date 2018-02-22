@@ -12,8 +12,15 @@ export default {
     file: 'lib/index.js',
     format: 'umd'
   },
+  external: [
+    'react',
+    'react-dom',
+    'react-helmet',
+    'react-router-dom',
+    'react-router-config'
+  ],
   plugins: [
-    peerDepsExternal(),
+    // peerDepsExternal(),
     includePaths({
       paths: ['./']
     }),

@@ -4,6 +4,10 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import includePaths from 'rollup-plugin-includepaths'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
+import fs from 'fs'
+import path from 'path'
+const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'))
+const external = Object.keys(pkg.peerDependencies || {})
 
 export default {
   input: 'src/decorators/ssrFetchData.js',
@@ -12,8 +16,9 @@ export default {
     file: 'lib/fetchData.js',
     format: 'umd'
   },
+  external,
   plugins: [
-    peerDepsExternal(),
+    // peerDepsExternal(),
     includePaths({
       paths: ['./']
     }),
