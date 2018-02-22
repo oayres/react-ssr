@@ -44,6 +44,13 @@ exports[`DefaultTemplate renders without exploding 1`] = `
     <script
       dangerouslySetInnerHTML={
         Object {
+          "__html": "var ssrLoadingSpinner = undefined",
+        }
+      }
+    />
+    <script
+      dangerouslySetInnerHTML={
+        Object {
           "__html": "window.__STATE = undefined;",
         }
       }
