@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime.js' // for async await, only used here
+
 /**
  * Builds a promise to execute the matched fetchData method
  * @param {*} component - component with fetchData method/promose
