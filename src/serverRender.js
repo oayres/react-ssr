@@ -27,8 +27,8 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
   const { matchedRoutes, statusCode } = matchRoute(matchesFromReactRouter)
   const { route = {}, match = {} } = matchedRoutes.length > 1 ? matchedRoutes[1] : matchedRoutes[0]
 
-  if (route.redirect) {
-    return res.redirect(route.redirect)
+  if (route.redirectTo) {
+    return res.redirect(route.redirectTo)
   }
 
   const dataCalls = findAllDataCalls(matchedRoutes, state, match, req)
@@ -36,6 +36,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
   Promise.all(dataCalls)
     .then(data => {
       const fetchedProps = {}
+      let loadingSpinner
 
       data.map(component => {
         const name = component.displayName
@@ -45,11 +46,11 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
       state._dataFromServerRender = fetchedProps
 
       if (LoadingSpinner) {
-        state.loadingSpinner = LoadingSpinner
+        loadingSpinner = LoadingSpinner
       }
 
       const app = ReactDOMServer.renderToString(
-        <Html state={state}>
+        <Html state={state} loadingSpinner={loadingSpinner}>
           <StaticRouter location={req.url} context={context}>
             {renderRoutes(cleansedRoutes)}
           </StaticRouter>
