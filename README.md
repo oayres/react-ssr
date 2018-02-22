@@ -161,7 +161,7 @@ return <DynamicComponent />
 
 Also, here's a known caveat with this package you'll need to consider for now:
 
-- Your React components _must_ must be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
+- Your React components _must_ be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
 ```jsx
 @myDecorator
 class MyComponentName extends Component {}
