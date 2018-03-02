@@ -42,47 +42,11 @@ $ npm install babel-plugin-react-ssr --save-dev
 }
 ```
 
-## Adding to your server
+## Getting started
 
-Firstly, you'll need to use the module on your Node server and have some static routes of your app setup. The below example uses express:
+Check out the exmaple playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
 
-- Your Node JS express server
-`server.js`
-```js
-import express from 'express'
-import ssr from 'react-ssr'
-import routes from './routes'
-
-const app = express()
-const renderer = ssr({ routes })
-
-app.get('*', renderer) // send all routes to ssr
-```
-
-- Static routes of your React app
-`routes.js`
-```js
-import HomePage from './HomePage'
-import NotFoundPage from './NotFoundPage'
-
-const routes = [
-  {
-    path: '/',
-    exact: true,
-    component: HomePage
-  },
-  {
-    path: '/about',
-    redirectTo: '/'
-  },
-  {
-    path: '**',
-    component: NotFoundPage
-  }
-]
-
-export default routes
-```
+See https://github.com/oayres/react-ssr-examples
 
 ## Fetching data
 
@@ -192,15 +156,14 @@ export default fetchData(variableWithUniqueName)
 This package is still early doors. Please do get involved, feel free to critique it, offer solutions that can change its approach slightly, or request examples on how you want to use it. Is your thing missing on the below to do? Raise an issue. Pull requests welcome. 👌
 
 To-do:
-
-- [ ] Test with nested (child) static routes
-- [ ] Allow overriding the default loading spinner
-- [ ] Disable loading spinner prop
-- [ ] Add a this.props.loading prop to fetchData components
-- [ ] Disable fetchData prop (client-side only)
-- [ ] Improve the export default caveat
-- [ ] Sample usage repo with MobX
-- [ ] Sample usage repo with Redux
+[ ] Test with nested (child) static routes
+[ ] Allow overriding the default loading spinner
+[ ] Disable loading spinner prop
+[X] Add a this.props.loading prop to fetchData components
+[X] Disable fetchData prop (client-side only)
+[ ] Improve the export default caveat
+[ ] Sample usage repo with MobX
+[ ] Sample usage repo with Redux
 
 ## License
 
