@@ -17,7 +17,7 @@ const ssrFetchData = DecoratedComponent => {
     }
 
     componentWillReceiveProps (nextProps) {
-      if (nextProps) {
+      if (nextProps && !nextProps.disableFetchData) {
         const { params = {} } = this.props.match
 
         if (Object.keys(params).length > 0 && params !== nextProps.params) {
@@ -74,7 +74,7 @@ const ssrFetchData = DecoratedComponent => {
         this.loaderRequired = false // on server...
       }
 
-      const showLoader = !this.props.disableLoadingSpinner && !this.state.fetched && this.loaderRequired
+      const showLoader = !this.props.disableLoadingSpinner && !this.props.disableFetchData && !this.state.fetched && this.loaderRequired
 
       return (
         <span>
@@ -88,7 +88,7 @@ const ssrFetchData = DecoratedComponent => {
   /** Defines what JSX components we need to fetchData for */
   _decoratedForServerRender._ssrWaitsFor = DecoratedComponent._ssrWaitsFor
   /** Unique name for this component, to use for checking on window state */
-  _decoratedForServerRender.displayName = DecoratedComponent.displayName
+  _decoratedForServerRender.displayName = DecoratedComponent.displayName || DecoratedComponent.name
   /** Make the static fetchData method available, pass through, as HOCs lose statics */
   _decoratedForServerRender.fetchData = DecoratedComponent.fetchData
 
