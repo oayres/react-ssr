@@ -23,15 +23,9 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
   const state = {}
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
-  const matchesFromReactRouter = matchRoutes(cleansedRoutes, req.url)
-  const { matchedRoutes, statusCode } = matchRoute(matchesFromReactRouter)
-  const { route = {}, match = {} } = matchedRoutes.length > 1 ? matchedRoutes[1] : matchedRoutes[0]
-
-  if (route.redirectTo) {
-    return res.redirect(route.redirectTo)
-  }
-
-  const dataCalls = findAllDataCalls(matchedRoutes, state, match, req)
+  const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
+  const { statusCode = 200 } = matchRoute(matchedRoutes)
+  const dataCalls = findAllDataCalls(matchedRoutes, state, req)
 
   Promise.all(dataCalls)
     .then(data => {
@@ -45,19 +39,19 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
 
       state._dataFromServerRender = fetchedProps
 
-      if (LoadingSpinner) {
-        loadingSpinner = LoadingSpinner
-      }
-
       const app = ReactDOMServer.renderToString(
+        <StaticRouter location={req.url} context={context}>
+          {renderRoutes(cleansedRoutes)}
+        </StaticRouter>
+      )
+
+      const wrapper = ReactDOMServer.renderToString(
         <Html state={state} loadingSpinner={loadingSpinner}>
-          <StaticRouter location={req.url} context={context}>
-            {renderRoutes(cleansedRoutes)}
-          </StaticRouter>
+          {app}
         </Html>
       )
 
-      res.status(statusCode).send(`<!DOCTYPE html>${app}`)
+      res.status(statusCode).send(`<!DOCTYPE html>${wrapper}`)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)
