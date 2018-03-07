@@ -79,7 +79,7 @@ const ssrFetchData = DecoratedComponent => {
       return (
         <span>
           {showLoader && <LoadingSpinner />}
-          <DecoratedComponent {...this.props} loading={!this.state.fetched && this.loaderRequired} />
+          <DecoratedComponent {...this.props} loading={!this.state.fetched && this.loaderRequired && !this.props.disableFetchData} />
         </span>
       )
     }
