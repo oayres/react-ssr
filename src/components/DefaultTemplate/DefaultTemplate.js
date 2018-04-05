@@ -4,7 +4,6 @@ class Html extends React.Component {
   render () {
     const state = this.props.state
     const injectedState = `window.__STATE = ${JSON.stringify(state)};`
-    const injectedSpinner = `var ssrLoadingSpinner = ${this.props.loadingSpinner}`
     let { title, meta, link, bodyAttrs, htmlAttrs } = this.props.document
 
     try {
@@ -37,7 +36,6 @@ class Html extends React.Component {
         </head>
         <body {...bodyAttrs}>
           <div id='root'>{this.props.children}</div>
-          <script dangerouslySetInnerHTML={{__html: injectedSpinner}} />
           <script dangerouslySetInnerHTML={{__html: injectedState}} />
           <script src='/assets/bundle.js' />
         </body>
