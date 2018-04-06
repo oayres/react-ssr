@@ -8,7 +8,7 @@ const fakeCall = (fakeThingToResolve) => {
   })
 }
 
-test('will directly return promises if component does not have _ssrWaitsFor or fetchData', () => {
+test('will directly return promises if component does not have ssrWaitsFor or fetchData', () => {
   const component = {}
   const result = fetchData(component, {}, [])
   expect(Array.isArray(result)).toBeTruthy()
@@ -21,10 +21,10 @@ test('will add a new promise in if the component has a fetchData', () => {
   expect(result.length).toEqual(1)
 })
 
-test('it populates the promises array with 2 promises if there is one in _ssrWaitsFor', () => {
+test('it populates the promises array with 2 promises if there is one in ssrWaitsFor', () => {
   const component = {
     fetchData: jest.fn(),
-    _ssrWaitsFor: [{
+    ssrWaitsFor: [{
       fetchData: jest.fn()
     }]
   }

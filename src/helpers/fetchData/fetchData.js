@@ -1,3 +1,4 @@
+import Q from 'q'
 import 'regenerator-runtime/runtime.js' // for async await, only used here
 
 /**
@@ -5,7 +6,7 @@ import 'regenerator-runtime/runtime.js' // for async await, only used here
  * @param {*} component - component with fetchData method/promose
  * @param {*} params - params of matched route to pass to fetchData
  */
-const executeFetchData = (component, match, req) => {
+const executeFetchData = (component, match, req, debug) => {
   return new Promise(async (resolve, reject) => {
     if (typeof component.fetchData !== 'function') {
       return reject(new Error('Fetch data not defined or not a function.'))
@@ -17,29 +18,52 @@ const executeFetchData = (component, match, req) => {
 
     if (!keys.length) {
       try {
-        const response = await fetch
-        const updatedKeys = Object.keys(response || {})
+        let response
 
-        updatedKeys.forEach((key, index) => {
-          props[key] = response[key]
-        })
+        try {
+          response = await fetch
+          const updatedKeys = Object.keys(response || {})
+          updatedKeys.forEach((key, index) => {
+            props[key] = response[key]
+          })
+        } catch (e) {
+          // data fetch failed...
+          console.warn('Fetch failed for', component.displayName)
+          props.error = true
+        }
 
         component.defaultProps = { ...component.defaultProps, ...props }
         resolve(component)
-      } catch (e) {
-        reject(e)
+      } catch (error) {
+        if (debug) {
+          console.warn('Rejected in an array from fetchData. Component: ', component.displayName)
+          console.warn('Error: ', error)
+        }
+
+        reject(component)
       }
     } else {
-      Promise.all(keys.map(key => fetch[key]))
+      Q.allSettled(keys.map(key => fetch[key]))
         .then(responses => {
           responses.forEach((data, index) => {
-            props[keys[index]] = data
+            if (data.value) {
+              props[keys[index]] = data.value
+            } else {
+              debug && console.warn(`Fetch #${index + 1} in ${component.displayName} failed.`)
+            }
           })
 
           component.defaultProps = { ...component.defaultProps, ...props }
           resolve(component)
         })
-        .catch(reject)
+        .catch(error => {
+          if (debug) {
+            console.warn('Rejected in an array from fetchData. Component: ', component.displayName)
+            console.warn('Error: ', error)
+          }
+
+          reject(component)
+        })
     }
   })
 }
@@ -50,15 +74,15 @@ const executeFetchData = (component, match, req) => {
  * @param params - contains our state
  * @returns {Array} promises - returns an array of promises, each a fetchData
  */
-const fetchData = (component, match, req, promises = []) => {
+const fetchData = (component, match, req, debug = false, promises = []) => {
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
-    promises.push(executeFetchData(component, match, req))
+    promises.push(executeFetchData(component, match, req, debug))
   }
 
-  if (component._ssrWaitsFor) {
-    component._ssrWaitsFor.forEach(childComponent => {
-      promises = fetchData(childComponent || childComponent.WrappedComponent, match, req, promises)
+  if (component.ssrWaitsFor) {
+    component.ssrWaitsFor.forEach(childComponent => {
+      promises = fetchData(childComponent || childComponent.WrappedComponent, match, req, debug, promises)
     })
   }
 
