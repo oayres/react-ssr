@@ -3,6 +3,10 @@ import StaticRouter from 'react-router-dom/StaticRouter'
 import ssrFetchData from './ssrFetchData'
 
 class Test extends React.Component {
+  static fetchData () {
+    // placeholder...
+  }
+
   render () {
     return <span />
   }

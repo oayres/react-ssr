@@ -1,19 +1,27 @@
 import React from 'react'
 import { withRouter } from 'react-router'
-import DefaultLoadingSpinner from '../components/LoadingSpinner/LoadingSpinner'
 import { executeFetchData } from '../helpers/fetchData/fetchData'
 
 const ssrFetchData = DecoratedComponent => {
   @withRouter
-  class _decoratedForServerRender extends React.Component {
+  class ssrFetchData extends React.Component {
     constructor (props) {
       super(props)
-      this.state = {
-        fetched: false
-      }
-
+      this.state = { fetched: false, params: props.match.params }
       this.recallFetchData = false
       this.loaderRequired = false
+    }
+
+    static getDerivedStateFromProps (nextProps, prevState) {
+      if (nextProps && !nextProps.disableFetchData) {
+        const { params = {} } = prevState
+
+        if (Object.keys(params).length > 0 && params !== nextProps.params) {
+          return { fetched: false, params }
+        }
+      }
+
+      return {}
     }
 
     componentWillReceiveProps (nextProps) {
@@ -58,12 +66,6 @@ const ssrFetchData = DecoratedComponent => {
     }
 
     render () {
-      let LoadingSpinner = DefaultLoadingSpinner
-
-      if (typeof window !== 'undefined') {
-        LoadingSpinner = window.ssrLoadingSpinner || LoadingSpinner
-      }
-
       if (!this.state.fetched && typeof window !== 'undefined') {
         this.extractFromWindow()
 
@@ -74,25 +76,19 @@ const ssrFetchData = DecoratedComponent => {
         this.loaderRequired = false // on server...
       }
 
-      const showLoader = !this.props.disableLoadingSpinner && !this.props.disableFetchData && !this.state.fetched && this.loaderRequired
-
-      return (
-        <span>
-          {showLoader && <LoadingSpinner />}
-          <DecoratedComponent {...this.props} loading={!this.state.fetched && this.loaderRequired && !this.props.disableFetchData} />
-        </span>
-      )
+      const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
+      return <DecoratedComponent {...this.props} loading={loading} />
     }
   }
 
   /** Defines what JSX components we need to fetchData for */
-  _decoratedForServerRender._ssrWaitsFor = DecoratedComponent._ssrWaitsFor
+  ssrFetchData.ssrWaitsFor = DecoratedComponent.ssrWaitsFor
   /** Unique name for this component, to use for checking on window state */
-  _decoratedForServerRender.displayName = DecoratedComponent.displayName || DecoratedComponent.name
+  ssrFetchData.displayName = DecoratedComponent.displayName || DecoratedComponent.name
   /** Make the static fetchData method available, pass through, as HOCs lose statics */
-  _decoratedForServerRender.fetchData = DecoratedComponent.fetchData
+  ssrFetchData.fetchData = DecoratedComponent.fetchData
 
-  return _decoratedForServerRender
+  return ssrFetchData
 }
 
 export default ssrFetchData
