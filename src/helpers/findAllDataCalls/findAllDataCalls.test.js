@@ -8,7 +8,7 @@ test('returns an empty array when you give it nothing', () => {
   expect(result).toEqual([])
 })
 
-test('it does not call fetchData when looping through route without _ssrWaitsFor or fetchData static properties', () => {
+test('it does not call fetchData when looping through route without ssrWaitsFor or fetchData static properties', () => {
   const dummyRoute = [{route: {component: {}}}]
   findAllDataCalls(dummyRoute)
   expect(fetchData).toHaveBeenCalledTimes(0)
