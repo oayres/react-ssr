@@ -44,11 +44,27 @@ $ npm install babel-plugin-react-ssr --save-dev
 
 ## Getting started
 
-Check out the exmaple playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
+Hopefully you can get a simple page server-rendering in minutes. Efficiently. Here's everything you need to know.
 
-See https://github.com/oayres/react-ssr-examples
+### Setting up the server
 
-## Fetching data
+Assuming you have a simple express server setup, you'll just need to hand off your routes to react-ssr. Bear in mind you can also pass a custom template that will be responsible for the 'HTML document' that wraps your React app, too. Copy the example from [src/components/DefaultTemplate](https://github.com/oayres/react-ssr/blob/master/src/components/DefaultTemplate/DefaultTemplate.js) as a starting point.
+
+```js
+import express from 'express'
+import ssr from 'react-ssr'
+import routes from '../../routes'
+
+const app = express()
+const renderer = ssr({
+  routes: routes
+})
+
+app.get('/*', renderer)
+app.listen(8000)
+```
+
+### Fetching data
 
 There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need a static `fetchData` method. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
 
@@ -76,13 +92,19 @@ class Navigation extends React.Component {
 
 🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**
 
-## Without babel plugin
+### Example repos
 
-Raise an issue if you'd like an alternative to the babel plugin. Anyway, without it, here's what you'll need to do:
+Check out the exmaple playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
+
+See https://github.com/oayres/react-ssr-examples
+
+### No babel plugin?
+
+Raise an issue if you'd like an alternative to the babel plugin. Without it, here's the two things you'll need to do:
 
 - Any component with a static fetchData must be wrapped at the bottom with our higher order component:
 ```jsx
-import ssrFetchData from 'react-ssr/lib/fetchData'
+import ssrFetchData from 'react-ssr/fetchData'
 
 class MyComponent extends React.Component {
   static fetchData () {}
@@ -93,6 +115,9 @@ export default ssrFetchData(MyComponent)
 
 - Your route/page/top-level components should have a waitsFor static array containing components required for fetchData calls, e.g:
 ```jsx
+import Example from './Example'
+import OtherChildWithStaticFetchData from './OtherChildWithStaticFetchData'
+
 class MyPage extends React.Component {
   render () {
     return (
@@ -101,9 +126,9 @@ class MyPage extends React.Component {
   }
 }
 
-MyPage._ssrWaitsFor = [
+MyPage.ssrWaitsFor = [
   Example,
-  SomeOtherChildWithStaticFetchData
+  OtherChildWithStaticFetchData
 ]
 
 export default MyPage
@@ -116,31 +141,35 @@ And your done.
 There's a few things to consider here. Since data fetching occurs before rendering begins, you'll have these points to deal with:
 
 - You can't access `this` inside your static `fetchData`. Chain API calls together in parent components if they are dependent.
-- You must use static routes. Dynamic routing (react router v4) takes place as your app is rendering, but this has huge performance implications for server side rendering. So, we must have a static set of routes that we can match against before rendering begins.
+- You must use static routes. Dynamic routing (using <Route />) takes place as your app is rendering, but this has huge performance implications for server side rendering. So, we must have a static set of routes that we can match against before rendering begins. For some reading, see the [data loading area of server side rendering in React Router v4](https://reacttraining.com/react-router/web/guides/server-rendering).
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
 ```jsx
 const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
 ```
 
-Also, here's a known caveat with this package you'll need to consider for now:
+## Caveat
 
-- Your React components _must_ be an export default, higher order components should be wrapped with decorators, rather than inline around the class name:
+Here's an edge case, but I'd rather put it here for you now incase it helps. Your React components _must_ export default a variable (and it should ideally have a unique name - so it can safely stash its data without clashing with other components), which could be the class, or the class wrapped in higher order components if you don't use decorators, here's some scenarios:
+
 ```jsx
 @myDecorator
 class MyComponentName extends Component {}
-
-export default MyComponentName
+export default MyComponentName // works
 ```
-There is a way to avoid the above if you absolutely must. There are rare cases where you can't use the decorator, or you might just not be in a position to use them for some reason. Import the HOC manually and define it like below, ensuring you use a unique variable name for the wrapped instance (even if you use the babel plugin, it will see this and skip it):
-```jsx
-import fetchData from 'react-ssr/lib/fetchData'
-import { observer } from 'mobx-react'
 
+```jsx
+import { observer } from 'mobx-react'
 class MyComponent extends Component {}
 
 const variableWithUniqueName = observer(MyComponent)
-export default fetchData(variableWithUniqueName)
+export default variableWithUniqueName // also works
+```
+
+```jsx
+import { observer } from 'mobx-react'
+class MyComponent extends Component {}
+export default observer(MyComponent) // currently would not work - do the above instead
 ```
 
 ## Options
@@ -149,21 +178,12 @@ export default fetchData(variableWithUniqueName)
 | ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
 | routes        | static routes array of your react app        | yes      | []                                         |
 | disable       | disables server-side rendering               | no       | false                                      |
+| debug         | adds more verbose logging to requests        | no       | false                                      |
 | Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
 
 ## Contributing
 
-This package is still early doors. Please do get involved, feel free to critique it, offer solutions that can change its approach slightly, or request examples on how you want to use it. Is your thing missing on the below to do? Raise an issue. Pull requests welcome. 👌
-
-To-do:
-[ ] Test with nested (child) static routes
-[ ] Allow overriding the default loading spinner
-[ ] Disable loading spinner prop
-[X] Add a this.props.loading prop to fetchData components
-[X] Disable fetchData prop (client-side only)
-[ ] Improve the export default caveat
-[ ] Sample usage repo with MobX
-[ ] Sample usage repo with Redux
+This package is still early doors. Please do get involved, feel free to critique it, offer solutions that can change its approach slightly, or request examples on how you want to use it. Spotted a bug, need something adding? Raise an issue. Pull requests welcome. 👌
 
 ## License
 
