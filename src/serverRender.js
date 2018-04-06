@@ -2,11 +2,12 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 import { matchRoutes, renderRoutes } from 'react-router-config'
+import Q from 'q'
 import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
 
-const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, LoadingSpinner }, req, res) => {
+const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, debug = false }, req, res) => {
   if (disable) {
     const html = ReactDOMServer.renderToString(<Html />)
     return res.send(`<!DOCTYPE html>${html}`)
@@ -25,16 +26,16 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, L
   const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
   const { statusCode = 200 } = matchRoute(matchedRoutes)
-  const dataCalls = findAllDataCalls(matchedRoutes, state, req)
+  const dataCalls = findAllDataCalls(matchedRoutes, state, req, debug)
 
-  Promise.all(dataCalls)
+  Q.allSettled(dataCalls)
     .then(data => {
       const fetchedProps = {}
       let loadingSpinner
 
       data.map(component => {
-        const name = component.displayName
-        fetchedProps[name] = component.defaultProps
+        const name = component.value.displayName
+        fetchedProps[name] = component.value.defaultProps
       })
 
       state._dataFromServerRender = fetchedProps
