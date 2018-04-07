@@ -110,7 +110,9 @@ ReactDOM.hydrate(<App />, document.getElementById('root'))
 
 There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need a static `fetchData` method. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
 
-Here's an example (note to use inline static syntax, you need another babel plugin, you can just do `Navigation.fetchData` otherwise):
+_Heads up! We're using the static keyword below. You'll need to add [the transform class properties babel plugin](https://babeljs.io/docs/plugins/transform-class-properties/) or another alternative to use this at the time of writing._
+
+Here's an example:
 ```js
 const getNavItems = () => {
   return new Promise((resolve, reject) => {
