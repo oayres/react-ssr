@@ -10,6 +10,7 @@ const ssrFetchData = DecoratedComponent => {
       this.state = { fetched: false, params: props.match.params }
       this.recallFetchData = false
       this.loaderRequired = false
+      this.error = false
     }
 
     static getDerivedStateFromProps (nextProps, prevState) {
@@ -42,10 +43,12 @@ const ssrFetchData = DecoratedComponent => {
         executeFetchData(DecoratedComponent, this.props.match, req)
           .then(componentWithData => {
             DecoratedComponent.defaultProps = componentWithData.defaultProps
+            this.error = false
             this.setState({ fetched: true })
           })
           .catch(error => {
             console.warn('Failed to fetch some props for fetchData. Rendering anyway...', error)
+            this.error = true
             this.setState({ fetched: true })
           })
       }
@@ -77,7 +80,8 @@ const ssrFetchData = DecoratedComponent => {
       }
 
       const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
-      return <DecoratedComponent {...this.props} loading={loading} />
+      const error = this.error && !this.props.disableFetchData
+      return <DecoratedComponent {...this.props} loading={loading} error={error} />
     }
   }
 
