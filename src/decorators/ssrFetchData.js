@@ -16,7 +16,7 @@ const ssrFetchData = DecoratedComponent => {
       if (nextProps && !nextProps.disableFetchData) {
         const { params = {} } = prevState
 
-        if (Object.keys(params).length > 0 && params !== nextProps.params) {
+        if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
           return { fetched: false, params }
         }
       }
@@ -28,7 +28,7 @@ const ssrFetchData = DecoratedComponent => {
       if (nextProps && !nextProps.disableFetchData) {
         const { params = {} } = this.props.match
 
-        if (Object.keys(params).length > 0 && params !== nextProps.params) {
+        if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
           this.setState({ fetched: false })
         }
       }
