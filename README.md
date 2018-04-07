@@ -112,17 +112,19 @@ There's one important rule: If you want to make a data call, and you'd like it t
 
 Here's an example (note to use inline static syntax, you need another babel plugin, you can just do `Navigation.fetchData` otherwise):
 ```js
-const pageContent = () => new Promise((resolve, reject) => {
-  fetch('/api')
-    .then(res => res.json())
-    .then(resolve)
-    .catch(reject)
+const getNavItems = () => {
+  return new Promise((resolve, reject) => {
+    fetch('/api/navigation')
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject)
+  })
 })
 
 class Navigation extends React.Component {
   static fetchData ({req, match}) {
     return {
-      content: pageContent() // becomes available as this.props.content
+      content: getNavItems() // becomes available as this.props.content
     }
   }
 
@@ -130,6 +132,14 @@ class Navigation extends React.Component {
     console.log(this.props.content)
     return <span />
   }
+}
+
+// alternative syntax...
+Navigation.fetchData = ({req, match}) => {
+  return {
+    content: getNavItems() // becomes available as this.props.content
+  }
+}
 ```
 
 🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**
