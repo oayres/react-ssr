@@ -22,7 +22,7 @@
 
 ## Overview
 
-`react-ssr` is a minimalistic solution to achieve server-side rendering with a few lines of code and a simple rule. The simple rule is outlined with performance in mind, and must be followed to server side render React apps effectively. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls at a component level.
+`react-ssr` achieves server-side rendering with a few lines of code and one simple rule. The rule is outlined with performance in mind, and must be followed to server side render React apps efficiently. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls at a component level.
 
 ## Installation
 
@@ -141,8 +141,8 @@ And your done.
 There's a few things to consider here. Since data fetching occurs before rendering begins, you'll have these points to deal with:
 
 - You can't access `this` inside your static `fetchData`. Chain API calls together in parent components if they are dependent.
-- You must use static routes. Dynamic routing (using <Route />) takes place as your app is rendering, but this has huge performance implications for server side rendering. So, we must have a static set of routes that we can match against before rendering begins. For some reading, see the [data loading area of server side rendering in React Router v4](https://reacttraining.com/react-router/web/guides/server-rendering).
-- Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like this, it won't server-side render, but instead show a loading spinner and client-side render:
+- You must use static routes. Dynamic routing (using `<Route />`) takes place as your app is rendering, but this has huge performance implications for server side rendering. So, we must have a static set of routes that we can match against before rendering begins. For some reading, see the [data loading with server side rendering in React Router v4](https://reacttraining.com/react-router/web/guides/server-rendering).
+- Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like the below, it will render with `this.props.loading` as true on the client, then fetch the data:
 ```jsx
 const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
@@ -150,7 +150,7 @@ return <DynamicComponent />
 
 ## Caveat
 
-Here's an edge case, but I'd rather put it here for you now incase it helps. Your React components _must_ export default a variable (and it should ideally have a unique name - so it can safely stash its data without clashing with other components), which could be the class, or the class wrapped in higher order components if you don't use decorators, here's some scenarios:
+This is an edge case, but I'd rather put it here for you now incase it helps. Your React components _must_ export default a variable (and it should ideally have a unique name - so it can safely stash its data without clashing with other components), which could be the class, or the class wrapped in higher order components if you don't use decorators, here's some scenarios:
 
 ```jsx
 @myDecorator
