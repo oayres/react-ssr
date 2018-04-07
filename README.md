@@ -146,6 +146,16 @@ Navigation.fetchData = ({req, match}) => {
 
 🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**
 
+Note that as per the above examples, `fetchData` has an object parameter with some values in:
+```js
+static fetchData ({match, req}) {}
+```
+
+| Value         | Description                                    |
+| ------------- | ---------------------------------------------- |
+| match         | React route that was matched, contains params  |
+| req           | Node JS request object, server side only       |
+
 ### Example repos
 
 Check out the exmaple playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
@@ -196,8 +206,6 @@ As data fetching occurs before rendering begins, you should consider:
 
 - You can't access `this` inside your static `fetchData`.
   - If you have some API call that needs data from another call, chain them together one after the other using a Promise or async await.
-  - You can access your matched route via `{ match }` in the fetchData, which contains route params.
-  - You can access `{ req }` in the fetchData too - NodeJS request object.
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like the below, it will render with `this.props.loading` as true on the client, then fetch the data and rerender:
 ```jsx
 const DynamicComponent = components['MyComponent']
