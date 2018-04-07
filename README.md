@@ -200,6 +200,15 @@ export default MyPage
 
 And your done.
 
+## Options
+
+| Option        | Description                                  | Required | Default                                    |
+| ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
+| routes        | static routes array of your react app        | yes      | []                                         |
+| disable       | disables server-side rendering               | no       | false                                      |
+| debug         | adds more verbose logging to requests        | no       | false                                      |
+| Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
+
 ## Notes
 
 As data fetching occurs before rendering begins, you should consider:
@@ -212,14 +221,6 @@ const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
 ```
 
-## Options
-
-| Option        | Description                                  | Required | Default                                    |
-| ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
-| routes        | static routes array of your react app        | yes      | []                                         |
-| disable       | disables server-side rendering               | no       | false                                      |
-| debug         | adds more verbose logging to requests        | no       | false                                      |
-| Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
 
 ## Contributing
 
