@@ -55,7 +55,7 @@ Assuming you have a simple express server setup, you'll just need to hand off yo
 ```js
 import express from 'express'
 import ssr from 'react-ssr'
-import routes from '../../routes'
+import routes from './routes'
 
 const app = express()
 const renderer = ssr({
@@ -64,6 +64,46 @@ const renderer = ssr({
 
 app.get('/*', renderer)
 app.listen(8000)
+```
+
+### Setting up the routes
+
+You will need an array of static routes, which means each route will be an object (as per React Router v4's docs) and not a `<Route />`. This is because a `<Route />` can only be read once rendering begins. A static route can be matched against before rendering begins.
+
+```js
+import HomePage from './pages/HomePage'
+import NotFoundPage from './pages/NotFoundPage'
+
+const routes = [
+  {
+    path: '/',
+    exact: true,
+    component: HomePage
+  },
+  {
+    path: '**',
+    component: NotFoundPage
+  }
+]
+```
+
+Check out [data loading with server side rendering in React Router v4](https://reacttraining.com/react-router/web/guides/server-rendering) to see other comments or examples.
+
+Additionally, your React app entry point will need to *hydrate* those routes out, for example: -
+```js
+import React from 'react'
+import ReactDOM from 'react-dom'
+import BrowserRouter from 'react-router-dom/BrowserRouter'
+import { renderRoutes } from 'react-router-config'
+import routes from './routes'
+
+const App = () => (
+  <BrowserRouter>
+    {renderRoutes(routes)}
+  </BrowserRouter>
+)
+
+ReactDOM.hydrate(<App />, document.getElementById('root'))
 ```
 
 ### Fetching data
