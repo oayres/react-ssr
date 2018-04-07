@@ -30,6 +30,8 @@
 $ npm install react-ssr --save
 ```
 
+We've just moved onto a major alpha incase you're interested. Just install `react-ssr@next` instead to opt for that.
+
 We recommend you use the babel plugin too. Add the babel plugin to your `.babelrc`.
 ```sh
 $ npm install babel-plugin-react-ssr --save-dev
@@ -113,7 +115,7 @@ class MyComponent extends React.Component {
 export default ssrFetchData(MyComponent)
 ```
 
-- Your route/page/top-level components should have a waitsFor static array containing components required for fetchData calls, e.g:
+- Your route/page/top-level components should have an ssrWaitsFor static array containing components required for fetchData calls, e.g:
 ```jsx
 import Example from './Example'
 import OtherChildWithStaticFetchData from './OtherChildWithStaticFetchData'
