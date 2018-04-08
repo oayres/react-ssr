@@ -1,6 +1,6 @@
 const matchRoute = (matchedRoutes = []) => {
   let statusCode = 200
-  let matchedRoute = matchedRoutes[0]
+  let matchedRoute = matchedRoutes[0] || {}
 
   if (matchedRoutes.length > 1) {
     if (matchedRoutes[1].route.path === '**') {

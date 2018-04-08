@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime.js' // for async await, only used here
 
 /**
  * Builds a promise to execute the matched fetchData method
- * @param {*} component - component with fetchData method/promose
+ * @param {*} component - component with fetchData method/promise
  * @param {*} params - params of matched route to pass to fetchData
  */
 const executeFetchData = (component, match, req, debug) => {
@@ -43,9 +43,7 @@ const executeFetchData = (component, match, req, debug) => {
         reject(component)
       }
     } else {
-      const waitFor = [fetch, ...keys.map(key => fetch[key])]
-
-      await Q.allSettled(waitFor)
+      Q.allSettled(keys.map(key => fetch[key]))
         .then(responses => {
           responses.forEach((data, index) => {
             if (data.value) {

@@ -9,7 +9,7 @@ const extractFetchData = (component, {match, req, debug}) => {
   }
 }
 
-const checkRoute = (options, route, routeCalls = []) => {
+const checkRoute = (options, route = {}, routeCalls = []) => {
   if (route.routes) {
     const childCalls = route.routes.map(route => checkRoute(options, route)) || []
     routeCalls = routeCalls.concat(childCalls)

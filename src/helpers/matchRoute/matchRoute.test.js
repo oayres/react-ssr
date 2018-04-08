@@ -10,9 +10,9 @@ test('returns a 200 status by default as route matched', () => {
   expect(result.statusCode).toBe(200)
 })
 
-test('matchedRoutes in response is of type array by default', () => {
+test('matchedRoute in response is of type object by default', () => {
   const result = matchRoute()
-  expect(Array.isArray(result.matchedRoutes)).toBeTruthy()
+  expect(typeof result.matchedRoute).toBe('object')
 })
 
 test('sets the status code to 404 when the path is **', () => {
