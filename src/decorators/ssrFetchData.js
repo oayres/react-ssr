@@ -22,7 +22,10 @@ const ssrFetchData = DecoratedComponent => {
         }
       }
 
-      return {}
+      return {
+        ...nextProps,
+        ...prevState
+      }
     }
 
     componentWillReceiveProps (nextProps) {
