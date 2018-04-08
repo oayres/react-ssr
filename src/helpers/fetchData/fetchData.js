@@ -43,7 +43,9 @@ const executeFetchData = (component, match, req, debug) => {
         reject(component)
       }
     } else {
-      Q.allSettled(keys.map(key => fetch[key]))
+      const waitFor = [fetch, ...keys.map(key => fetch[key])]
+
+      await Q.allSettled(waitFor)
         .then(responses => {
           responses.forEach((data, index) => {
             if (data.value) {
