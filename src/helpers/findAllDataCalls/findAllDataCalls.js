@@ -1,17 +1,33 @@
 import fetchData from '../fetchData'
 
-const findAllDataCalls = (matchedRoutes = [], state = {}, match = {}, req = {}, debug) => {
-  let promises = matchedRoutes.map(({route}) => {
-    const requiresData = route.component.fetchData
-    const ssrWaitsFor = route.component.ssrWaitsFor
+const extractFetchData = (component, {match, req, debug}) => {
+  const requiresData = component.fetchData
+  const ssrWaitsFor = component.ssrWaitsFor
 
-    if (requiresData || ssrWaitsFor) {
-      return fetchData(route.component, match, req, debug)
-    }
-  })
+  if (requiresData || ssrWaitsFor) {
+    return fetchData(component, match, req, debug)
+  }
+}
 
-  promises = promises.filter(promise => typeof promise !== 'undefined')
-  return [].concat.apply([], promises)
+const checkRoute = (options, route, routeCalls = []) => {
+  if (route.routes) {
+    const childCalls = route.routes.map(route => checkRoute(options, route)) || []
+    routeCalls = routeCalls.concat(childCalls)
+  }
+
+  if (route.component) {
+    routeCalls.push(extractFetchData(route.component, options))
+  }
+
+  return routeCalls
+}
+
+const flatten = arr => Array.isArray(arr) ? [].concat(...arr.map(flatten)) : arr
+
+const findAllDataCalls = (matchedRoute = {}, options) => {
+  const promises = checkRoute(options, matchedRoute.route) || []
+  const flattenedPromises = flatten(promises.filter(promise => typeof promise !== 'undefined'))
+  return flattenedPromises
 }
 
 export default findAllDataCalls
