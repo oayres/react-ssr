@@ -202,6 +202,17 @@ And your done.
 
 ## Options
 
+What you can pass to `react-ssr` when you call it on the server. Example:
+
+```js
+import ssr from 'react-ssr'
+const renderer = ssr({
+  routes: [],
+  disable: false,
+  debug: false
+})
+```
+
 | Option        | Description                                  | Required | Default                                    |
 | ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
 | routes        | static routes array of your react app        | yes      | []                                         |
