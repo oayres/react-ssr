@@ -25,13 +25,12 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, d
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
-  const { statusCode = 200 } = matchRoute(matchedRoutes)
-  const dataCalls = findAllDataCalls(matchedRoutes, state, req, debug)
+  const { matchedRoute, statusCode = 200 } = matchRoute(matchedRoutes)
+  const dataCalls = findAllDataCalls(matchedRoute, {req, debug, match: matchedRoute.match})
 
   Q.allSettled(dataCalls)
     .then(data => {
       const fetchedProps = {}
-      let loadingSpinner
 
       data.map(component => {
         const name = component.value.displayName
@@ -47,7 +46,7 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, d
       )
 
       const wrapper = ReactDOMServer.renderToString(
-        <Html state={state} loadingSpinner={loadingSpinner}>
+        <Html state={state}>
           {app}
         </Html>
       )
