@@ -158,7 +158,7 @@ static fetchData ({match, req}) {}
 
 ### Example repos
 
-Check out the exmaple playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
+Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
 
 See https://github.com/oayres/react-ssr-examples
 
