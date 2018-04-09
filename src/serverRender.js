@@ -7,7 +7,7 @@ import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
 
-const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, debug = false }, req, res) => {
+const serverRender = ({ Html = DefaultTemplate, Providers, globals = ``, routes, disable, debug = false }, req, res) => {
   if (disable) {
     const html = ReactDOMServer.renderToString(<Html />)
     return res.send(`<!DOCTYPE html>${html}`)
@@ -31,6 +31,11 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, d
   Q.allSettled(dataCalls)
     .then(data => {
       const fetchedProps = {}
+      let appJsx = (
+        <StaticRouter location={req.url} context={context}>
+          {renderRoutes(cleansedRoutes)}
+        </StaticRouter>
+      )
 
       data.map(component => {
         const name = component.value.displayName
@@ -39,12 +44,15 @@ const serverRender = ({ Html = DefaultTemplate, globals = ``, routes, disable, d
 
       state._dataFromServerRender = fetchedProps
 
-      const app = ReactDOMServer.renderToString(
-        <StaticRouter location={req.url} context={context}>
-          {renderRoutes(cleansedRoutes)}
-        </StaticRouter>
-      )
+      if (Providers) {
+        appJsx = (
+          <Providers>
+            {appJsx}
+          </Providers>
+        )
+      }
 
+      const app = ReactDOMServer.renderToString(appJsx)
       const wrapper = ReactDOMServer.renderToString(
         <Html state={state}>
           {app}

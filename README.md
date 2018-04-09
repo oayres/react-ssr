@@ -219,6 +219,7 @@ const renderer = ssr({
 | disable       | disables server-side rendering               | no       | false                                      |
 | debug         | adds more verbose logging to requests        | no       | false                                      |
 | Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
+| Providers     | wraps your routes, useful for context providers, etc | no | |
 
 ## Notes
 
