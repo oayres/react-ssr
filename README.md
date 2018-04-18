@@ -209,7 +209,12 @@ import ssr from 'react-ssr'
 const renderer = ssr({
   routes: [],
   disable: false,
-  debug: false
+  debug: false,
+  cache: {
+    mode: 'full|none', // full means entire page is cached
+    duration: 1800, // cache duration in seconds, will rerender and set it again after this time for a given route
+    redisClient: null // optional redisClient - ioredis or node_redis - to use redis as store
+  }
 })
 ```
 
@@ -220,6 +225,7 @@ const renderer = ssr({
 | debug         | adds more verbose logging to requests        | no       | false                                      |
 | Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
 | Providers     | wraps your routes, useful for context providers, etc | no | |
+| cache         | allows caching of components or pages        | no       | { mode: 'none', duration: 1800 }           |
 
 ## Notes
 
