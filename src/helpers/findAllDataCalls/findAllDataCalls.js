@@ -26,7 +26,7 @@ const flatten = arr => Array.isArray(arr) ? [].concat(...arr.map(flatten)) : arr
 
 const findAllDataCalls = (matchedRoute = {}, options) => {
   const promises = checkRoute(options, matchedRoute.route) || []
-  const flattenedPromises = flatten(promises.filter(promise => typeof promise !== 'undefined'))
+  const flattenedPromises = flatten(promises).filter(promise => typeof promise !== 'undefined')
   return flattenedPromises
 }
 
