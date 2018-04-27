@@ -1,7 +1,7 @@
 {
   "name": "react-ssr",
   "version": "1.0.0",
-  "description": "A simplified solution to server side rendering React applications.",
+  "description": "A simplified solution to React server side rendering.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
