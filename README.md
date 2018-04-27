@@ -30,8 +30,6 @@
 $ npm install react-ssr --save
 ```
 
-We've just moved onto a major alpha incase you're interested. Just install `react-ssr@next` instead to opt for that.
-
 We recommend you use the babel plugin too. Add the babel plugin to your `.babelrc`.
 ```sh
 $ npm install babel-plugin-react-ssr --save-dev
