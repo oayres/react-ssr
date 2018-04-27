@@ -210,7 +210,7 @@ const renderer = ssr({
   routes: [],
   disable: false,
   debug: false,
-  cache: {
+  cache: { // currently experimental - only accepts redis as a store
     mode: 'full|none', // full means entire page is cached
     duration: 1800, // cache duration in seconds, will rerender and set it again after this time for a given route
     redisClient: null // optional redisClient - ioredis or node_redis - to use redis as store
