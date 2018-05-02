@@ -42,6 +42,8 @@ $ npm install babel-plugin-react-ssr --save-dev
 }
 ```
 
+**Heads up**, that babel plugin is likely to get deprecated soon. There's plans to bake everything under the hood in react-ssr to both improve performance and reduce reliance on build tools. More to follow.
+
 ## Getting started
 
 Hopefully you can get a simple page server-rendering in minutes. Efficiently. Here's everything you need to know.
