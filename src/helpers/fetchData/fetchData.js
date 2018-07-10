@@ -6,13 +6,13 @@ import 'regenerator-runtime/runtime.js' // for async await, only used here
  * @param {*} component - component with fetchData method/promise
  * @param {*} params - params of matched route to pass to fetchData
  */
-const executeFetchData = (component, match, req, debug) => {
+const executeFetchData = (component, match, req, res, debug) => {
   return new Promise(async (resolve, reject) => {
     if (typeof component.fetchData !== 'function') {
       return reject(new Error('Fetch data not defined or not a function.'))
     }
 
-    const fetch = component.fetchData({match, req})
+    const fetch = component.fetchData({match, req, res})
     const keys = Object.keys(fetch || {}) || []
     const props = {}
 
@@ -74,15 +74,15 @@ const executeFetchData = (component, match, req, debug) => {
  * @param params - contains our state
  * @returns {Array} promises - returns an array of promises, each a fetchData
  */
-const fetchData = (component, match, req, debug = false, promises = []) => {
+const fetchData = (component, match, req, res, debug = false, promises = []) => {
   if (component.fetchData) {
     component.defaultProps = component.defaultProps || {}
-    promises.push(executeFetchData(component, match, req, debug))
+    promises.push(executeFetchData(component, match, req, res, debug))
   }
 
   if (component.ssrWaitsFor) {
     component.ssrWaitsFor.forEach(childComponent => {
-      promises = fetchData(childComponent || childComponent.WrappedComponent, match, req, debug, promises)
+      promises = fetchData(childComponent || childComponent.WrappedComponent, match, req, res, debug, promises)
     })
   }
 

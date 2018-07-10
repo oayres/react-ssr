@@ -27,6 +27,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "hoist-non-react-statics": "^2.5.5",
     "q": "^1.5.1",
     "regenerator": "^0.12.3"
   },

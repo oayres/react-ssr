@@ -137,7 +137,7 @@ class Navigation extends React.Component {
 }
 
 // alternative syntax...
-Navigation.fetchData = ({req, match}) => {
+Navigation.fetchData = ({req, res, match}) => {
   return {
     content: getNavItems() // becomes available as this.props.content
   }
@@ -155,6 +155,7 @@ static fetchData ({match, req}) {}
 | ------------- | ---------------------------------------------- |
 | match         | React route that was matched, contains params  |
 | req           | Node JS request object, server side only       |
+| res           | Node JS response object, server side only      |
 
 ### Example repos
 

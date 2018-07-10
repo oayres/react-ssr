@@ -73,7 +73,7 @@ const serverRender = async ({
   const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
   const { matchedRoute, statusCode = 200 } = matchRoute(matchedRoutes)
-  const dataCalls = findAllDataCalls(matchedRoute, {req, debug, match: matchedRoute.match})
+  const dataCalls = findAllDataCalls(matchedRoute, {req, res, debug, match: matchedRoute.match})
 
   Q.allSettled(dataCalls)
     .then(async data => {
