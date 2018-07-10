@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { executeFetchData } from '../helpers/fetchData/fetchData'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 
 const ssrFetchData = DecoratedComponent => {
   @withRouter
@@ -28,22 +29,11 @@ const ssrFetchData = DecoratedComponent => {
       }
     }
 
-    componentWillReceiveProps (nextProps) {
-      if (nextProps && !nextProps.disableFetchData) {
-        const { params = {} } = this.props.match
-
-        if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
-          this.setState({ fetched: false })
-        }
-      }
-    }
-
     fetchData () {
       if (this.recallFetchData) {
         this.loaderRequired = true
-        const req = {} // fake version of Node's req, as passed as argument
 
-        executeFetchData(DecoratedComponent, this.props.match, req)
+        executeFetchData(DecoratedComponent, this.props.match)
           .then(componentWithData => {
             DecoratedComponent.defaultProps = componentWithData.defaultProps
             this.error = false
@@ -88,14 +78,7 @@ const ssrFetchData = DecoratedComponent => {
     }
   }
 
-  /** Defines what JSX components we need to fetchData for */
-  ssrFetchData.ssrWaitsFor = DecoratedComponent.ssrWaitsFor
-  /** Unique name for this component, to use for checking on window state */
-  ssrFetchData.displayName = DecoratedComponent.displayName || DecoratedComponent.name
-  /** Make the static fetchData method available, pass through, as HOCs lose statics */
-  ssrFetchData.fetchData = DecoratedComponent.fetchData
-
-  return ssrFetchData
+  return hoistNonReactStatics(ssrFetchData, DecoratedComponent)
 }
 
 export default ssrFetchData
