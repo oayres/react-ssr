@@ -78,6 +78,13 @@ const ssrFetchData = DecoratedComponent => {
     }
   }
 
+  /** Defines what JSX components we need to fetchData for */
+  ssrFetchData.ssrWaitsFor = DecoratedComponent.ssrWaitsFor
+  /** Unique name for this component, to use for checking on window state */
+  ssrFetchData.displayName = DecoratedComponent.displayName || DecoratedComponent.name
+  /** Make the static fetchData method available, pass through, as HOCs lose statics */
+  ssrFetchData.fetchData = DecoratedComponent.fetchData
+
   return hoistNonReactStatics(ssrFetchData, DecoratedComponent)
 }
 
