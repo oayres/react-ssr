@@ -82,6 +82,7 @@
     "parser": "babel-eslint"
   },
   "jest": {
+    "testEnvironment": "node",
     "setupFiles": [
       "./config/jest.config.js"
     ],
