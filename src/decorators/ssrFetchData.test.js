@@ -14,7 +14,7 @@ class Test extends React.Component {
 
 test('renders without exploding', () => {
   const Component = ssrFetchData(Test)
-  const wrapper = mount(
+  const wrapper = shallow(
     <StaticRouter context={{}}>
       <Component match={{}} />
     </StaticRouter>
