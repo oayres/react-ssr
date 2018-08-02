@@ -48,7 +48,8 @@ const serverRender = async ({
 
   const { redisClient } = cache || {}
   const extensionRegex = /(?:\.([^.]+))?$/
-  const extension = extensionRegex.exec(req.url)[1]
+  const urlWithoutQuery = req.url.split('?')[0]
+  const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
   const safeToCache = req.useCacheForRequest
 
