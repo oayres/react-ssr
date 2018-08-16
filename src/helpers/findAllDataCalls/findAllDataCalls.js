@@ -11,7 +11,12 @@ const extractFetchData = (component, {match, req, res, debug}) => {
 
 const checkRoute = (options, route = {}, routeCalls = []) => {
   if (route.routes) {
-    const childCalls = route.routes.map(route => checkRoute(options, route)) || []
+    const childCalls = route.routes.map(route => {
+      if (route && route.path && route.path.includes(options.url)) {
+        return checkRoute(options, route) || []
+      }
+    })
+
     routeCalls = routeCalls.concat(childCalls)
   }
 
@@ -24,8 +29,13 @@ const checkRoute = (options, route = {}, routeCalls = []) => {
 
 const flatten = arr => Array.isArray(arr) ? [].concat(...arr.map(flatten)) : arr
 
-const findAllDataCalls = (matchedRoute = {}, options) => {
-  const promises = checkRoute(options, matchedRoute.route) || []
+const findAllDataCalls = (matchedRoutes = [], options) => {
+  let promises = []
+
+  matchedRoutes.forEach(matchedRoute => {
+    promises = promises.concat(checkRoute(options, matchedRoute.route) || [])
+  })
+
   const flattenedPromises = flatten(promises).filter(promise => typeof promise !== 'undefined')
   return flattenedPromises
 }

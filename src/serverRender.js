@@ -7,6 +7,7 @@ import Q from 'q'
 import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
 import matchRoute from './helpers/matchRoute'
+import url from 'url'
 
 const fetchPageFromCache = async (redisClient, key) => {
   let data
@@ -73,8 +74,11 @@ const serverRender = async ({
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
-  const { matchedRoute, statusCode = 200 } = matchRoute(matchedRoutes)
-  const dataCalls = findAllDataCalls(matchedRoute, {req, res, debug, match: matchedRoute.match})
+  const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
+  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, debug, url: url.parse(req.url).pathname})
+  const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
+
+  console.info('Data calls: ', dataCalls)
 
   Q.allSettled(dataCalls)
     .then(async data => {
