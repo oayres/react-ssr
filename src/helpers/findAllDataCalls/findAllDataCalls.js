@@ -29,7 +29,7 @@ const checkRoute = (options, route = {}, routeCalls = []) => {
 
 const flatten = arr => Array.isArray(arr) ? [].concat(...arr.map(flatten)) : arr
 
-const findAllDataCalls = (matchedRoutes = [], options) => {
+const findAllDataCalls = (matchedRoutes = [], options = {}) => {
   let promises = []
 
   matchedRoutes.forEach(matchedRoute => {

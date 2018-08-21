@@ -36,20 +36,22 @@ const serverRender = async ({
   routes,
   disable,
   debug = false,
+  ignore = [],
   cache = {
     mode: 'none',
     duration: 1800,
     redisClient: null
   }
 }, req, res) => {
-  if (disable) {
+  const urlWithoutQuery = req.url.split('?')[0]
+
+  if (disable || ignore.includes(urlWithoutQuery)) {
     const html = ReactDOMServer.renderToString(<Html />)
     return res.send(`<!DOCTYPE html>${html}`)
   }
 
   const { redisClient } = cache || {}
   const extensionRegex = /(?:\.([^.]+))?$/
-  const urlWithoutQuery = req.url.split('?')[0]
   const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
   const safeToCache = req.useCacheForRequest
@@ -75,10 +77,13 @@ const serverRender = async ({
   const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
-  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, debug, url: url.parse(req.url).pathname})
+  const parsedUrl = url.parse(req.url) || {}
+  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, debug, url: parsedUrl.pathname})
   const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
 
-  console.info('Data calls: ', dataCalls)
+  if (!parsedUrl.pathname) {
+    console.warn('react-ssr: Parsed URL has no path name.')
+  }
 
   Q.allSettled(dataCalls)
     .then(async data => {

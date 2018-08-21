@@ -213,6 +213,9 @@ const renderer = ssr({
   routes: [],
   disable: false,
   debug: false,
+  ignore: [
+    '/example/route' // sends route without ssr if matched
+  ],
   cache: { // currently experimental - only accepts redis as a store
     mode: 'full|none', // full means entire page is cached
     duration: 1800, // cache duration in seconds, will rerender and set it again after this time for a given route

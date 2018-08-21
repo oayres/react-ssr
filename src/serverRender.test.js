@@ -7,7 +7,7 @@ test('calls res to send basic html immediately back if disable is enabled', () =
     Html: 'div'
   }
 
-  serverRender(options, {}, res)
+  serverRender(options, {url: ''}, res)
 
   expect(res.send).toHaveBeenCalled()
   expect(res.send).toHaveBeenCalledWith(`<!DOCTYPE html><div data-reactroot=""></div>`)
