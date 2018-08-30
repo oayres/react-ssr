@@ -46,10 +46,10 @@ const executeFetchData = (component, match, req, res, debug) => {
       Q.allSettled(keys.map(key => fetch[key]))
         .then(responses => {
           responses.forEach((data, index) => {
-            if (data.value) {
-              props[keys[index]] = data.value
-            } else {
-              debug && console.warn(`Fetch #${index + 1} in ${component.displayName} failed.`)
+            props[keys[index]] = data.value
+
+            if (!data.value) {
+              debug && console.warn(`Fetch #${index + 1} in ${component.displayName} returned undefined.`)
             }
           })
 
