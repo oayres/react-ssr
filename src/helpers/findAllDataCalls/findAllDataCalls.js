@@ -33,7 +33,7 @@ const findAllDataCalls = (matchedRoutes = [], options) => {
   let promises = []
 
   matchedRoutes.forEach(matchedRoute => {
-    promises = promises.concat(checkRoute(options, matchedRoute.route) || [])
+    promises = promises.concat(checkRoute({...options, match: matchedRoute.match}, matchedRoute.route) || [])
   })
 
   const flattenedPromises = flatten(promises).filter(promise => typeof promise !== 'undefined')
