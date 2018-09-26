@@ -177,7 +177,6 @@ import ssr from 'react-ssr'
 const renderer = ssr({
   routes: [],
   disable: false,
-  debug: false,
   ignore: [
     '/example/route' // sends route without ssr if matched
   ],
@@ -193,7 +192,6 @@ const renderer = ssr({
 | ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
 | routes        | static routes array of your react app        | yes      | []                                         |
 | disable       | disables server-side rendering               | no       | false                                      |
-| debug         | adds more verbose logging to requests        | no       | false                                      |
 | Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
 | Providers     | wraps your routes, useful for context providers, etc | no | |
 | cache         | allows caching of components or pages        | no       | { mode: 'none', duration: 1800 }           |
