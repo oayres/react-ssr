@@ -1,4 +1,4 @@
-import serverRender from './serverRender'
+const serverRender = require('./serverRender')
 
 test('calls res to send basic html immediately back if disable is enabled', () => {
   const res = { send: jest.fn() }

@@ -1,6 +1,8 @@
-import React from 'react'
+const React = require('react')
 
 const { Provider, Consumer } = React.createContext()
 
-export { Provider as SSRProvider }
-export { Consumer as SSRConsumer }
+module.exports = {
+  SSRProvider: Provider,
+  SSRConsumer: Consumer
+}

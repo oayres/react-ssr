@@ -1,11 +1,11 @@
 import fetchData from '../fetchData'
 
-const extractFetchData = (component, {match, req, res, debug}) => {
+const extractFetchData = (component, {match, req, res}) => {
   const requiresData = component.fetchData
   const ssrWaitsFor = component.ssrWaitsFor
 
   if (requiresData || ssrWaitsFor) {
-    return fetchData(component, match, req, res, debug)
+    return fetchData(component, match, req, res)
   }
 }
 

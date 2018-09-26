@@ -1,3 +1,3 @@
-import 'regenerator-runtime/runtime.js'
-import serverRender from './serverRender'
-export default (config = {}) => serverRender.bind(null, config)
+require('regenerator-runtime/runtime.js')
+const serverRender = require('./serverRender')
+module.exports = (config = {}) => serverRender.bind(null, config)

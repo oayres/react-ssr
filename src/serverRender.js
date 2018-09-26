@@ -1,12 +1,13 @@
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import StaticRouter from 'react-router-dom/StaticRouter'
-import { matchRoutes, renderRoutes } from 'react-router-config'
-import Q from 'q'
-import DefaultTemplate from './components/DefaultTemplate'
-import findAllDataCalls from './helpers/findAllDataCalls'
-import { SSRProvider } from './ssrContext'
-import url from 'url'
+const Q = require('q')
+const url = require('url')
+const debug = require('debug')
+const React = require('react')
+const ReactDOMServer = require('react-dom/server')
+const StaticRouter = require('react-router-dom/StaticRouter')
+const { matchRoutes, renderRoutes } = require('react-router-config')
+const DefaultTemplate = require('./components/DefaultTemplate')
+const findAllDataCalls = require('./helpers/findAllDataCalls')
+const { SSRProvider } = require('./ssrContext')
 
 const fetchPageFromCache = async (redisClient, key) => {
   let data
@@ -31,10 +32,8 @@ const storePageInCache = async (redisClient, key, data, cacheExpiry) => {
 const serverRender = async ({
   Html = DefaultTemplate,
   Providers,
-  globals = ``,
   routes,
   disable,
-  debug = false,
   ignore = [],
   cache = {
     mode: 'none',
@@ -77,11 +76,11 @@ const serverRender = async ({
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
-  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, debug, url: parsedUrl.pathname})
+  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, url: parsedUrl.pathname})
   const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
 
   if (!parsedUrl.pathname) {
-    console.warn('react-ssr: Parsed URL has no path name.')
+    debug('Parsed URL has no patch name.')
   }
 
   Q.allSettled(dataCalls)
@@ -125,4 +124,4 @@ const serverRender = async ({
     })
 }
 
-export default serverRender
+module.exports = serverRender
