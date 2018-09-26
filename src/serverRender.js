@@ -6,7 +6,8 @@ import Q from 'q'
 // import { minify } from 'html-minifier'
 import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
-import matchRoute from './helpers/matchRoute'
+// import matchRoute from './helpers/matchRoute'
+import { SSRProvider } from './ssrContext'
 import url from 'url'
 
 const fetchPageFromCache = async (redisClient, key) => {
@@ -86,28 +87,30 @@ const serverRender = async ({
   }
 
   Q.allSettled(dataCalls)
-    .then(async data => {
-      const fetchedProps = {}
-      let appJsx = (
+    .then(async fetchedProps => {
+      fetchedProps = fetchedProps.map(prop => prop.value).reduce((prop, props) => ({...props, ...prop}))
+
+      let appJsx = () => (
         <StaticRouter location={req.url} context={context}>
           {renderRoutes(cleansedRoutes)}
         </StaticRouter>
       )
 
-      data.map(component => {
-        const name = component.value.displayName
-        fetchedProps[name] = component.value.defaultProps
-      })
-
       state._dataFromServerRender = fetchedProps
 
       if (Providers) {
-        appJsx = (
+        appJsx = () => (
           <Providers>
-            {appJsx}
+            <appJsx />
           </Providers>
         )
       }
+
+      appJsx = () => (
+        <SSRProvider value={fetchedProps}>
+          <appJsx />
+        </SSRProvider>
+      )
 
       const app = ReactDOMServer.renderToString(appJsx)
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)

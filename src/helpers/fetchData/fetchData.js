@@ -15,6 +15,8 @@ const executeFetchData = (component, match, req, res, debug) => {
     const fetch = component.fetchData({match, req, res})
     const keys = Object.keys(fetch || {}) || []
     const props = {}
+    const result = {}
+    result[component.displayName] = {}
 
     if (!keys.length) {
       try {
@@ -24,7 +26,7 @@ const executeFetchData = (component, match, req, res, debug) => {
           response = await fetch
           const updatedKeys = Object.keys(response || {})
           updatedKeys.forEach((key, index) => {
-            props[key] = response[key]
+            result[component.displayName][key] = response[key]
           })
         } catch (e) {
           // data fetch failed...
@@ -32,29 +34,28 @@ const executeFetchData = (component, match, req, res, debug) => {
           props.error = true
         }
 
-        component.defaultProps = { ...component.defaultProps, ...props }
-        resolve(component)
+        // component.defaultProps = { ...component.defaultProps, ...props }
+        resolve(result)
       } catch (error) {
         if (debug) {
           console.warn('Rejected in an array from fetchData. Component: ', component.displayName)
           console.warn('Error: ', error)
         }
 
-        reject(component)
+        reject(result)
       }
     } else {
       Q.allSettled(keys.map(key => fetch[key]))
         .then(responses => {
           responses.forEach((data, index) => {
-            props[keys[index]] = data.value
+            result[component.displayName][keys[index]] = data.value
 
             if (!data.value) {
               debug && console.warn(`Fetch #${index + 1} in ${component.displayName} returned undefined.`)
             }
           })
 
-          component.defaultProps = { ...component.defaultProps, ...props }
-          resolve(component)
+          resolve(result)
         })
         .catch(error => {
           if (debug) {
@@ -62,7 +63,7 @@ const executeFetchData = (component, match, req, res, debug) => {
             console.warn('Error: ', error)
           }
 
-          reject(component)
+          reject(result)
         })
     }
   })

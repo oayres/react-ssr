@@ -1,22 +1,11 @@
 {
   "presets": [
-    [
-      "env", {
-        "modules": false
-      }
-    ]
+    "env"
   ],
   "plugins": [
     "transform-react-jsx",
     "transform-object-rest-spread",
     "transform-class-properties",
     "transform-decorators-legacy"
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        "env"
-      ]
-    }
-  }
+  ]
 }

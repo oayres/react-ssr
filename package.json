@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "1.2.2",
+  "version": "2.0.0-alpha.2",
   "description": "A simplified solution to React server side rendering.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,6 +8,8 @@
     "test:cover": "jest --coverage",
     "test:ci": "jest --coverage && codecov",
     "build": "npm run build:main && npm run build:hoc",
+    "precompile": "rimraf lib",
+    "compile": "babel src --out-dir lib",
     "build:main": "rollup --config config/rollup.config.js",
     "build:hoc": "rollup --config config/rollup.client.config.js"
   },
@@ -28,11 +30,13 @@
   "license": "MIT",
   "dependencies": {
     "hoist-non-react-statics": "^2.5.5",
+    "lodash.clonedeep": "^4.5.0",
     "q": "^1.5.1",
     "regenerator": "^0.12.3",
     "url": "^0.11.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
     "babel-jest": "^22.0.4",
@@ -52,6 +56,7 @@
     "react-helmet": "^5.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
+    "rimraf": "^2.6.2",
     "rollup": "^0.53.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.3",

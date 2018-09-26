@@ -2,6 +2,8 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { executeFetchData } from '../helpers/fetchData/fetchData'
 import hoistNonReactStatics from 'hoist-non-react-statics'
+import { SSRConsumer } from '../ssrContext'
+import 'regenerator-runtime/runtime.js'
 
 const ssrFetchData = DecoratedComponent => {
   @withRouter
@@ -9,7 +11,6 @@ const ssrFetchData = DecoratedComponent => {
     constructor (props) {
       super(props)
       this.state = { fetched: false, params: props.match.params }
-      this.recallFetchData = false
       this.loaderRequired = false
       this.error = false
     }
@@ -29,52 +30,46 @@ const ssrFetchData = DecoratedComponent => {
       }
     }
 
-    fetchData () {
-      if (this.recallFetchData) {
-        this.loaderRequired = true
-
-        executeFetchData(DecoratedComponent, this.props.match)
-          .then(componentWithData => {
-            DecoratedComponent.defaultProps = componentWithData.defaultProps
-            this.error = false
-            this.setState({ fetched: true })
-          })
-          .catch(error => {
-            console.warn('Failed to fetch some props for fetchData. Rendering anyway...', error)
-            this.error = true
-            this.setState({ fetched: true })
-          })
+    async fetchData () {
+      try {
+        const props = await executeFetchData(DecoratedComponent, this.props.match)
+        this.clientFetchedProps = props
+        this.error = false
+        this.setState({ fetched: true })
+      } catch (error) {
+        console.warn('Failed to fetch some props for fetchData. Rendering anyway...', error)
+        this.error = true
+        this.setState({ fetched: true })
       }
     }
 
     extractFromWindow () {
-      if (typeof window !== 'undefined') {
-        const { _dataFromServerRender = {} } = window.__STATE || {}
-        const props = _dataFromServerRender[DecoratedComponent.displayName]
-
-        if (props) {
-          DecoratedComponent.defaultProps = {...DecoratedComponent.defaultProps, ...props}
-        } else {
-          this.recallFetchData = true
-          this.loaderRequired = true
-        }
-      }
+      const { _dataFromServerRender = {} } = window.__STATE || {}
+      return _dataFromServerRender[DecoratedComponent.displayName]
     }
 
     render () {
-      if (!this.state.fetched && typeof window !== 'undefined') {
-        this.extractFromWindow()
-
-        if (this.recallFetchData && !this.props.disableFetchData) {
-          this.fetchData()
-        }
-      } else if (typeof window === 'undefined') {
+      if (typeof window === 'undefined') {
         this.loaderRequired = false // on server...
       }
 
-      const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
-      const error = this.error && !this.props.disableFetchData
-      return <DecoratedComponent {...this.props} loading={loading} error={error} />
+      return (
+        <SSRConsumer>
+          {(props = {}) => {
+            let componentProps = props[DecoratedComponent.displayName]
+            componentProps = componentProps || this.clientFetchedProps || this.extractFromWindow()
+
+            if (!componentProps) {
+              this.fetchData()
+              this.loaderRequired = true
+            }
+
+            const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
+            const error = this.error && !this.props.disableFetchData
+            return <DecoratedComponent {...this.props} {...componentProps} loading={loading} error={error} />
+          }}
+        </SSRConsumer>
+      )
     }
   }
 

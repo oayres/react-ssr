@@ -1,1 +1,1 @@
-module.exports = require('./lib/fetchData');
+module.exports = require('./lib/decorators/ssrFetchData');
