@@ -144,7 +144,7 @@ Navigation.fetchData = ({req, res, match}) => {
 }
 ```
 
-🏆 You should now have server-side rendering setup.
+🏆 You should now have server-side rendering setup with asynchronous data calls.
 
 ## ⌨️ Options
 
@@ -181,13 +181,14 @@ const renderer = ssr({
 })
 ```
 
-| Option        | Description                                  | Required | Default                                    |
-| ------------- | -------------------------------------------- | -------- | ------------------------------------------ |
-| routes        | static routes array of your react app        | yes      | []                                         |
-| disable       | disables server-side rendering               | no       | false                                      |
-| Html          | override core html document template         | no       | see src/components/DefaultTemplate in repo |
-| Providers     | wraps your routes, useful for context providers, etc | no | |
-| cache         | allows caching of components or pages        | no       | { mode: 'none', duration: 1800 }           |
+| Option        | Description                                           | Required | Default                                    |
+| ------------- | ----------------------------------------------------- | -------- | ------------------------------------------ |
+| routes        | static routes array of your react app                 | yes      | []                                         |
+| disable       | disables server-side rendering                        | no       | false                                      |
+| ignore        | array of route paths to skip SSR, just send document  | no       | false                                      |
+| Html          | override core html document template                  | no       | see src/components/DefaultTemplate in repo |
+| Providers     | wraps your routes, useful for context providers, etc  | no       |                                            |
+| cache         | allows caching of components or pages                 | no       | { mode: 'none', duration: 1800 }           |
 
 ## Example repos
 
