@@ -22,7 +22,7 @@
 
 ## 🔍 Overview
 
-`react-ssr` achieves React server-side rendering with a few lines of code and one simple rule. The rule is outlined with performance in mind, and must be followed to server side render React apps efficiently. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls at a component level.
+`react-ssr` achieves React server-side rendering with a few lines of code and one simple rule. The rule is outlined with performance in mind, and must be followed to server side render React apps efficiently. `react-ssr` adds another optional 'lifecycle' method to your components for fetching data.
 
 ## ⏳ Installation
 
@@ -41,6 +41,8 @@ $ npm install babel-plugin-react-ssr --save-dev
   ]
 }
 ```
+
+You'll also need React 16.3 or higher and React Router 4. They're peerDependencies, obvs.
 
 ## 👋 Getting started
 
