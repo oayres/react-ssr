@@ -112,15 +112,6 @@ _Heads up! We're using the static keyword below. You'll need to add [the transfo
 
 Here's an example:
 ```js
-const getNavItems = () => {
-  return new Promise((resolve, reject) => {
-    fetch('/api/navigation')
-      .then(res => res.json())
-      .then(resolve)
-      .catch(reject)
-  })
-})
-
 class Navigation extends React.Component {
   static fetchData ({req, res, match}) {
     if (req && req.thing) {
@@ -128,7 +119,7 @@ class Navigation extends React.Component {
     }
 
     return {
-      content: getNavItems() // becomes available as this.props.content
+      content: axios.get('/api/navigation') // becomes available as this.props.content
     }
   }
 
@@ -141,23 +132,29 @@ class Navigation extends React.Component {
 // alternative syntax...
 Navigation.fetchData = ({req, res, match}) => {
   return {
-    content: getNavItems() // becomes available as this.props.content
+    content: axios.get('/api/navigation') // becomes available as this.props.content
   }
+}
+
+// only one data call? you can spread out the result into props...
+Navigation.fetchData = ({req, res, match}) => {
+  return axios.get('/api/navigation') // becomes available as this.props[x], where x is every key returned in top of json tree response from this api call
 }
 ```
 
-🏆 You should now have server-side rendering setup. **Keep reading if you haven't used the babel plugin.**
+🏆 You should now have server-side rendering setup.
 
 Note that as per the above examples, `fetchData` has an object parameter with some values in:
 ```js
-static fetchData ({match, req}) {}
+static fetchData ({req, res, match, isServerRender}) {}
 ```
 
-| Value         | Description                                    |
-| ------------- | ---------------------------------------------- |
-| match         | React route that was matched, contains params  |
-| req           | Node JS request object, server side only       |
-| res           | Node JS response object, server side only      |
+| Value           | Description                                         |
+| --------------- | --------------------------------------------------- |
+| req             | Node JS request object, server side only            |
+| res             | Node JS response object, server side only           |
+| match           | React route that was matched, contains params       |
+| isServerRender  | Shorthand to know if executed from client or server |
 
 ### Example repos
 
@@ -167,41 +164,9 @@ See https://github.com/oayres/react-ssr-examples
 
 ### No babel plugin?
 
-Raise an issue if you'd like an alternative to the babel plugin. Without it, here's the two things you'll need to do:
+Two simple steps should be taken if you're giving that a skip, but we recommend you use it to abstract this nonsense away from your codebase. If you'd like an alternative, raise an issue or a PR :-)
 
-- Any component with a static fetchData must be wrapped at the bottom with our higher order component:
-```jsx
-import ssrFetchData from 'react-ssr/fetchData'
-
-class MyComponent extends React.Component {
-  static fetchData () {}
-}
-
-export default ssrFetchData(MyComponent)
-```
-
-- Your route/page/top-level components should have an ssrWaitsFor static array containing components required for fetchData calls, e.g:
-```jsx
-import Example from './Example'
-import OtherChildWithStaticFetchData from './OtherChildWithStaticFetchData'
-
-class MyPage extends React.Component {
-  render () {
-    return (
-      <Example />
-    )
-  }
-}
-
-MyPage.ssrWaitsFor = [
-  Example,
-  OtherChildWithStaticFetchData
-]
-
-export default MyPage
-```
-
-And your done.
+[Find out the steps you need to take without the babel plugin here](#).
 
 ## ⌨️ Options
 
