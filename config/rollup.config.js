@@ -27,7 +27,7 @@ export default {
         'src/**/*.js',
         'node_modules/**'
       ]
-    }),
-    uglify()
+    })
+    // uglify()
   ]
 }
