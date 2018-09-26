@@ -166,12 +166,12 @@ There's two things to know in this section: arguments to `fetchData` and options
 static fetchData ({req, res, match, isServerRender}) {}
 ```
 
-| Value           | Description                                         |
-| --------------- | --------------------------------------------------- |
-| req             | Node JS request object, server side only            |
-| res             | Node JS response object, server side only           |
-| match           | React route that was matched, contains params       |
-| isServerRender  | Shorthand to know if executed from client or server |
+| Argument        | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
+| req             | Node JS request object, server side only                    |
+| res             | Node JS response object, server side only                   |
+| match           | React route that was matched, contains params               |
+| isServerRender  | Shorthand boolean to know if executed from client or server |
 
 ### Configuration for react-ssr
 
