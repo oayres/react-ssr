@@ -20,11 +20,11 @@
 </a>
 <br>
 
-## Overview
+## 🔍 Overview
 
 `react-ssr` achieves React server-side rendering with a few lines of code and one simple rule. The rule is outlined with performance in mind, and must be followed to server side render React apps efficiently. It supports React Router 4, which introduced challenges to server-side rendering by making you have to declare data calls at a route level. `react-ssr` allows you to make those calls at a component level.
 
-## Installation
+## ⏳ Installation
 
 ```sh
 $ npm install react-ssr --save
@@ -42,7 +42,7 @@ $ npm install babel-plugin-react-ssr --save-dev
 }
 ```
 
-## Getting started
+## 👋 Getting started
 
 Hopefully you can get a simple page server-rendering in minutes. Efficiently. Here's everything you need to know.
 
@@ -203,7 +203,7 @@ export default MyPage
 
 And your done.
 
-## Options
+## ⌨️ Options
 
 What you can pass to `react-ssr` when you call it on the server. Example:
 
@@ -233,7 +233,7 @@ const renderer = ssr({
 | Providers     | wraps your routes, useful for context providers, etc | no | |
 | cache         | allows caching of components or pages        | no       | { mode: 'none', duration: 1800 }           |
 
-## Notes
+## 📰 Notes
 
 As data fetching occurs before rendering begins, you should consider:
 
@@ -246,10 +246,10 @@ return <DynamicComponent />
 ```
 
 
-## Contributing
+## 💡 Contributing
 
 This package is still early doors. Please do get involved, feel free to critique it, offer solutions that can change its approach slightly, or request examples on how you want to use it. Spotted a bug, need something adding? Raise an issue. Pull requests welcome. 👌
 
-## License
+## 🔑 License
 
 [MIT](https://github.com/oayres/react-ssr/blob/master/LICENSE.md)
