@@ -30,7 +30,7 @@
 $ npm install react-ssr --save
 ```
 
-We recommend you use the babel plugin too. Add the babel plugin to your `.babelrc`.
+We recommend you use [the babel plugin](https://github.com/oayres/babel-plugin-react-ssr#readme) too. Add the babel plugin to your `.babelrc`.
 ```sh
 $ npm install babel-plugin-react-ssr --save-dev
 ```
