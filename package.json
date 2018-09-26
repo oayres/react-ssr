@@ -29,6 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "debug": "^4.0.1",
     "hoist-non-react-statics": "^2.5.5",
     "lodash.clonedeep": "^4.5.0",
     "q": "^1.5.1",
