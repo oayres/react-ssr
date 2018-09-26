@@ -144,18 +144,6 @@ Navigation.fetchData = ({req, res, match}) => {
 
 🏆 You should now have server-side rendering setup.
 
-Note that as per the above examples, `fetchData` has an object parameter with some values in:
-```js
-static fetchData ({req, res, match, isServerRender}) {}
-```
-
-| Value           | Description                                         |
-| --------------- | --------------------------------------------------- |
-| req             | Node JS request object, server side only            |
-| res             | Node JS response object, server side only           |
-| match           | React route that was matched, contains params       |
-| isServerRender  | Shorthand to know if executed from client or server |
-
 ### Example repos
 
 Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
@@ -170,7 +158,22 @@ Two simple steps should be taken if you're giving that a skip, but we recommend 
 
 ## ⌨️ Options
 
-What you can pass to `react-ssr` when you call it on the server. Example:
+There's two things to know in this section: arguments to `fetchData` and options for `react-ssr`.
+
+### Arguments to fetchData
+
+```js
+static fetchData ({req, res, match, isServerRender}) {}
+```
+
+| Value           | Description                                         |
+| --------------- | --------------------------------------------------- |
+| req             | Node JS request object, server side only            |
+| res             | Node JS response object, server side only           |
+| match           | React route that was matched, contains params       |
+| isServerRender  | Shorthand to know if executed from client or server |
+
+### Configuration for react-ssr
 
 ```js
 import ssr from 'react-ssr'
