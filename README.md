@@ -46,7 +46,7 @@ $ npm install babel-plugin-react-ssr --save-dev
 
 Hopefully you can get a simple page server-rendering in minutes. Efficiently. Here's everything you need to know.
 
-### Setting up the server
+### 1. Setting up the server
 
 Assuming you have a simple express server setup, you'll just need to hand off your routes to react-ssr. Bear in mind you can also pass a custom template that will be responsible for the 'HTML document' that wraps your React app, too. Copy the example from [src/components/DefaultTemplate](https://github.com/oayres/react-ssr/blob/master/src/components/DefaultTemplate/DefaultTemplate.js) as a starting point.
 
@@ -64,7 +64,7 @@ app.get('/*', renderer)
 app.listen(8000)
 ```
 
-### Setting up the routes
+### 2. Setting up the routes
 
 You will need an array of static routes, which means each route will be an object (as per React Router v4's docs) and not a `<Route />`. This is because a `<Route />` can only be read once rendering begins. A static route can be matched against before rendering begins.
 
@@ -104,7 +104,7 @@ const App = () => (
 ReactDOM.hydrate(<App />, document.getElementById('root'))
 ```
 
-### Fetching data
+### 3. Fetching data
 
 There's one important rule: If you want to make a data call, and you'd like it to be server side rendered correctly, you'll need a static `fetchData` method. `react-ssr` will execute this before it begins rendering your app on the server and inject the result of it into the components props.
 
@@ -143,18 +143,6 @@ Navigation.fetchData = ({req, res, match}) => {
 ```
 
 🏆 You should now have server-side rendering setup.
-
-### Example repos
-
-Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
-
-See https://github.com/oayres/react-ssr-examples
-
-### No babel plugin?
-
-Two simple steps should be taken if you're giving that a skip, but we recommend you use it to abstract this nonsense away from your codebase. If you'd like an alternative, raise an issue or a PR :-)
-
-[Find out the steps you need to take without the babel plugin here](#).
 
 ## ⌨️ Options
 
@@ -199,6 +187,12 @@ const renderer = ssr({
 | Providers     | wraps your routes, useful for context providers, etc | no | |
 | cache         | allows caching of components or pages        | no       | { mode: 'none', duration: 1800 }           |
 
+## Example repos
+
+Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
+
+See https://github.com/oayres/react-ssr-examples
+
 ## 📰 Notes
 
 As data fetching occurs before rendering begins, you should consider:
@@ -211,6 +205,11 @@ const DynamicComponent = components['MyComponent']
 return <DynamicComponent />
 ```
 
+### No babel plugin?
+
+Two simple steps should be taken if you're giving that a skip, but we recommend you use it to abstract this nonsense away from your codebase. If you'd like an alternative, raise an issue or a PR :-)
+
+[Find out the steps you need to take without the babel plugin here](#).
 
 ## 💡 Contributing
 
