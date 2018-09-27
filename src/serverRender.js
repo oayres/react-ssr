@@ -80,7 +80,7 @@ const serverRender = async ({
   const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
 
   if (!parsedUrl.pathname) {
-    debug('Parsed URL has no patch name.')
+    debug('Parsed URL has no path name.')
   }
 
   Q.allSettled(dataCalls)
