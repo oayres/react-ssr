@@ -50,7 +50,7 @@ Hopefully you can get a simple page server-rendering in minutes. Efficiently. He
 
 ### 1. Setting up the server
 
-Assuming you have a simple express server setup, you'll just need to hand off your routes to react-ssr. Bear in mind you can also pass a custom template that will be responsible for the 'HTML document' that wraps your React app, too. Copy the example from [src/components/DefaultTemplate](https://github.com/oayres/react-ssr/blob/master/src/components/DefaultTemplate/DefaultTemplate.js) as a starting point.
+Assuming you have a simple express server setup, you'll just need to hand off your routes to react-ssr. Note that you can also pass a custom template that will be responsible for the 'HTML document' that wraps your React app. Copy the example from [src/components/DefaultTemplate](https://github.com/oayres/react-ssr/blob/master/src/components/DefaultTemplate/DefaultTemplate.js) as a starting point.
 
 ```js
 import express from 'express'
@@ -126,6 +126,16 @@ class Navigation extends React.Component {
   }
 
   render () {
+    if (this.props.loading) {
+      // react-ssr is calling fetchData client-side
+      return <p>loading...</p>
+    }
+
+    if (this.props.error) {
+      // react-ssr encountered an error calling your fetchData
+      return <p>Fancy retry fetch UI...</p>
+    }
+
     console.log(this.props.content)
     return <span />
   }
