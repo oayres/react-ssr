@@ -22,7 +22,7 @@
 
 ## 🔍 Overview
 
-`react-ssr` achieves React server-side rendering with a few lines of code and one simple rule. The rule is outlined with performance in mind, and must be followed to server side render React apps efficiently. `react-ssr` adds another optional 'lifecycle' method to your components for fetching data.
+`react-ssr` is a simple and lightweight React server-side rendering solution that abstracts the complexities of server-side rendering React applications away from the codebase. `react-ssr` adds another optional 'lifecycle' method to your components for fetching data.
 
 ## ⏳ Installation
 
@@ -47,6 +47,8 @@ You'll also need React 16.3 or higher and React Router 4. They're peerDependenci
 ## 👋 Getting started
 
 Hopefully you can get a simple page server-rendering in minutes. Efficiently. Here's everything you need to know.
+
+**Learn quicker by example?** [Check the sample app out](https://github.com/oayres/react-ssr-sample).
 
 ### 1. Setting up the server
 
@@ -200,11 +202,11 @@ const renderer = ssr({
 | Providers     | wraps your routes, useful for context providers, etc  | no       |                                            |
 | cache         | allows caching of components or pages                 | no       | { mode: 'none', duration: 1800 }           |
 
-## Example repos
+## Example
 
 Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
 
-See https://github.com/oayres/react-ssr-examples
+See https://github.com/oayres/react-ssr-sample
 
 ## 📰 Notes
 
