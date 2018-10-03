@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 const Q = require('q')
@@ -31,7 +31,7 @@ const storePageInCache = async (redisClient, key, data, cacheExpiry) => {
 
 const serverRender = async ({
   Html = DefaultTemplate,
-  Providers,
+  Providers = ({ children }) => <Fragment>{children}</Fragment>,
   routes,
   disable,
   ignore = [],
