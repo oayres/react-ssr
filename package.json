@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "A simplified solution to React server side rendering.",
   "main": "lib/index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "^4.0.1",
+    "debug": "^3.2.5",
     "hoist-non-react-statics": "^3.0.1",
     "lodash.clonedeep": "^4.5.0",
     "q": "^1.5.1",
