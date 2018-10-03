@@ -1,1 +1,1 @@
-module.exports = require('./decorators/ssrFetchData');
+export { default } from './decorators/ssrFetchData'

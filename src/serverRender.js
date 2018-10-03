@@ -1,9 +1,9 @@
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import StaticRouter from 'react-router-dom/StaticRouter'
 const Q = require('q')
 const url = require('url')
 const debug = require('debug')('react-ssr:serverRender')
-const React = require('react')
-const ReactDOMServer = require('react-dom/server')
-const StaticRouter = require('react-router-dom/StaticRouter')
 const { matchRoutes, renderRoutes } = require('react-router-config')
 const DefaultTemplate = require('./components/DefaultTemplate')
 const findAllDataCalls = require('./helpers/findAllDataCalls')
@@ -87,16 +87,16 @@ const serverRender = async ({
 
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
-      debug('Fetched props? ', fetchedProps)
+      debug('Fetched props... ', fetchedProps)
       fetchedProps = fetchedProps.map(prop => prop.value)
 
       if (fetchedProps.length) {
         fetchedProps = fetchedProps.reduce((prop, props) => ({ ...props, ...prop }))
       }
 
-      debug(cleansedRoutes)
+      state._dataFromServerRender = fetchedProps
 
-      let appJsx = (
+      const app = ReactDOMServer.renderToString((
         <SSRProvider value={fetchedProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
@@ -104,11 +104,8 @@ const serverRender = async ({
             </StaticRouter>
           </Providers>
         </SSRProvider>
-      )
+      ))
 
-      state._dataFromServerRender = fetchedProps
-
-      const app = ReactDOMServer.renderToString(appJsx)
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
 
@@ -123,4 +120,4 @@ const serverRender = async ({
     })
 }
 
-module.exports = serverRender
+export default serverRender

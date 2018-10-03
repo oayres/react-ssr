@@ -1,5 +1,5 @@
-const React = require('react')
-const withRouter = require('react-router').withRouter
+import React from 'react'
+import { withRouter } from 'react-router'
 const executeFetchData = require('../helpers/executeFetchData')
 const hoistNonReactStatics = require('hoist-non-react-statics')
 const SSRConsumer = require('../ssrContext').SSRConsumer
@@ -74,13 +74,14 @@ const ssrFetchData = DecoratedComponent => {
     }
   }
 
-  const { ssrWaitsFor, displayName, name, fetchData } = DecoratedComponent
+  /** Defines what JSX components we need to fetchData for */
+  ssrFetchData.ssrWaitsFor = DecoratedComponent.ssrWaitsFor
+  /** Unique name for this component, to use for checking on window state */
+  ssrFetchData.displayName = DecoratedComponent.displayName || DecoratedComponent.name
+  /** Make the static fetchData method available, pass through, as HOCs lose statics */
+  ssrFetchData.fetchData = DecoratedComponent.fetchData
 
-  return hoistNonReactStatics(ssrFetchData, DecoratedComponent, {
-    ssrWaitsFor,
-    fetchData,
-    displayName: displayName || name
-  })
+  return hoistNonReactStatics(ssrFetchData, DecoratedComponent)
 }
 
-module.exports = ssrFetchData
+export default ssrFetchData
