@@ -3,10 +3,8 @@ import ReactDOMServer from 'react-dom/server'
 import StaticRouter from 'react-router-dom/StaticRouter'
 import { matchRoutes, renderRoutes } from 'react-router-config'
 import Q from 'q'
-// import { minify } from 'html-minifier'
 import DefaultTemplate from './components/DefaultTemplate'
 import findAllDataCalls from './helpers/findAllDataCalls'
-import matchRoute from './helpers/matchRoute'
 import url from 'url'
 
 const fetchPageFromCache = async (redisClient, key) => {
@@ -75,10 +73,10 @@ const serverRender = async ({
   const state = {}
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
-  const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
+  const matchedRoutes = matchRoutes(cleansedRoutes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
-  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, debug, url: parsedUrl.pathname})
+  const dataCalls = findAllDataCalls(matchedRoutes, { req, res, debug, url: parsedUrl.pathname })
   const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
 
   if (!parsedUrl.pathname) {
