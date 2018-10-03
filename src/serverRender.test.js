@@ -8,7 +8,7 @@ test('calls res to send basic html immediately back if disable is enabled', () =
     Html: 'div'
   }
 
-  serverRender(options, {url: ''}, res)
+  serverRender(options, { url: '' }, res)
 
   expect(res.send).toHaveBeenCalled()
   expect(res.send).toHaveBeenCalledWith(`<!DOCTYPE html><div data-reactroot=""></div>`)
@@ -21,7 +21,7 @@ test('calls res to send basic html immediately back if url is in ignore array', 
     ignore: ['/test']
   }
 
-  serverRender(options, {url: '/test'}, res)
+  serverRender(options, { url: '/test' }, res)
 
   expect(res.send).toHaveBeenCalled()
   expect(res.send).toHaveBeenCalledWith(`<!DOCTYPE html><div data-reactroot=""></div>`)

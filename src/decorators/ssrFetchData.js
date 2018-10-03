@@ -56,7 +56,6 @@ const ssrFetchData = DecoratedComponent => {
       return (
         <SSRConsumer>
           {(props = {}) => {
-            console.info('ssrFetchData props? ', props)
             let componentProps = props[DecoratedComponent.displayName]
             componentProps = componentProps || this.clientFetchedProps || this.extractFromWindow()
 
