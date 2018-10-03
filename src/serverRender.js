@@ -1,6 +1,6 @@
 const Q = require('q')
 const url = require('url')
-const debug = require('debug')
+const debug = require('debug')('react-ssr:serverRender')
 const React = require('react')
 const ReactDOMServer = require('react-dom/server')
 const StaticRouter = require('react-router-dom/StaticRouter')
@@ -76,38 +76,37 @@ const serverRender = async ({
   const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
-  const dataCalls = findAllDataCalls(matchedRoutes, {req, res, url: parsedUrl.pathname})
+  const dataCalls = findAllDataCalls(matchedRoutes, { req, res, url: parsedUrl.pathname })
   const statusCode = (lastRoute && lastRoute.route && lastRoute.route.path && lastRoute.route.path.includes('*')) ? 404 : 200
 
   if (!parsedUrl.pathname) {
     debug('Parsed URL has no path name.')
   }
 
+  debug('Routes? ', cleansedRoutes)
+
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
-      fetchedProps = fetchedProps.map(prop => prop.value).reduce((prop, props) => ({...props, ...prop}))
+      debug('Fetched props? ', fetchedProps)
+      fetchedProps = fetchedProps.map(prop => prop.value)
 
-      let appJsx = () => (
-        <StaticRouter location={req.url} context={context}>
-          {renderRoutes(cleansedRoutes)}
-        </StaticRouter>
+      if (fetchedProps.length) {
+        fetchedProps = fetchedProps.reduce((prop, props) => ({ ...props, ...prop }))
+      }
+
+      debug(cleansedRoutes)
+
+      let appJsx = (
+        <SSRProvider value={fetchedProps}>
+          <Providers>
+            <StaticRouter location={req.url} context={context}>
+              {renderRoutes(cleansedRoutes)}
+            </StaticRouter>
+          </Providers>
+        </SSRProvider>
       )
 
       state._dataFromServerRender = fetchedProps
-
-      if (Providers) {
-        appJsx = () => (
-          <Providers>
-            <appJsx />
-          </Providers>
-        )
-      }
-
-      appJsx = () => (
-        <SSRProvider value={fetchedProps}>
-          <appJsx />
-        </SSRProvider>
-      )
 
       const app = ReactDOMServer.renderToString(appJsx)
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)

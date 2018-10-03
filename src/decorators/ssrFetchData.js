@@ -1,9 +1,9 @@
-import React from 'react'
-import { withRouter } from 'react-router'
-import { executeFetchData } from '../helpers/fetchData/fetchData'
-import hoistNonReactStatics from 'hoist-non-react-statics'
-import { SSRConsumer } from '../ssrContext'
-import 'regenerator-runtime/runtime.js'
+const React = require('react')
+const withRouter = require('react-router').withRouter
+const executeFetchData = require('../helpers/executeFetchData')
+const hoistNonReactStatics = require('hoist-non-react-statics')
+const SSRConsumer = require('../ssrContext').SSRConsumer
+require('regenerator-runtime/runtime.js')
 
 const ssrFetchData = DecoratedComponent => {
   @withRouter
@@ -56,6 +56,7 @@ const ssrFetchData = DecoratedComponent => {
       return (
         <SSRConsumer>
           {(props = {}) => {
+            console.info('ssrFetchData props? ', props)
             let componentProps = props[DecoratedComponent.displayName]
             componentProps = componentProps || this.clientFetchedProps || this.extractFromWindow()
 
@@ -73,14 +74,13 @@ const ssrFetchData = DecoratedComponent => {
     }
   }
 
-  /** Defines what JSX components we need to fetchData for */
-  ssrFetchData.ssrWaitsFor = DecoratedComponent.ssrWaitsFor
-  /** Unique name for this component, to use for checking on window state */
-  ssrFetchData.displayName = DecoratedComponent.displayName || DecoratedComponent.name
-  /** Make the static fetchData method available, pass through, as HOCs lose statics */
-  ssrFetchData.fetchData = DecoratedComponent.fetchData
+  const { ssrWaitsFor, displayName, name, fetchData } = DecoratedComponent
 
-  return hoistNonReactStatics(ssrFetchData, DecoratedComponent)
+  return hoistNonReactStatics(ssrFetchData, DecoratedComponent, {
+    ssrWaitsFor,
+    fetchData,
+    displayName: displayName || name
+  })
 }
 
-export default ssrFetchData
+module.exports = ssrFetchData

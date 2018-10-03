@@ -1,6 +1,6 @@
-import fetchData from '../fetchData'
+const fetchData = require('../fetchData')
 
-const extractFetchData = (component, {match, req, res}) => {
+const extractFetchData = (component, { match, req, res }) => {
   const requiresData = component.fetchData
   const ssrWaitsFor = component.ssrWaitsFor
 
@@ -46,4 +46,4 @@ const findAllDataCalls = (matchedRoutes = [], options = {}) => {
   return flattenedPromises
 }
 
-export default findAllDataCalls
+module.exports = findAllDataCalls

@@ -8,7 +8,7 @@ const executeFetchData = async (component, match, req, res) => {
     return new Error('Fetch data not defined or not a function.')
   }
 
-  const fetch = component.fetchData({match, req, res, isServerRender: !!req})
+  const fetch = component.fetchData({ match, req, res, isServerRender: !!req })
   const keys = Object.keys(fetch || {}) || []
   const props = {}
   const result = {}

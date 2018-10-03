@@ -1,4 +1,4 @@
-import fetchData from './fetchData'
+const fetchData = require('./fetchData')
 
 const fakeCall = (fakeThingToResolve) => {
   return new Promise((resolve, reject) => {

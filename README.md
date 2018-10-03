@@ -202,18 +202,10 @@ const renderer = ssr({
 | Providers     | wraps your routes, useful for context providers, etc  | no       |                                            |
 | cache         | allows caching of components or pages                 | no       | { mode: 'none', duration: 1800 }           |
 
-## Example
-
-Check out the example playground repository. It includes a basic Webpack setup with recommended babel plugins. More examples to follow, please raise an issue if you'd like something more urgently.
-
-See https://github.com/oayres/react-ssr-sample
-
 ## 📰 Notes
 
 As data fetching occurs before rendering begins, you should consider:
 
-- You can't access `this` inside your static `fetchData`.
-  - If you have some API call that needs data from another call, chain them together one after the other using a Promise or async await.
 - Components that are dynamically rendered with static `fetchData` will not be server-side rendered. So, if you're programatically doing something like the below, it will render with `this.props.loading` as true on the client, then fetch the data and rerender:
 ```jsx
 const DynamicComponent = components['MyComponent']
