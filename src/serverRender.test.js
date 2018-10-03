@@ -1,5 +1,4 @@
-const serverRender = require('./serverRender')
-// const debug = require('debug')
+import serverRender from './serverRender'
 jest.mock('debug')
 
 test('calls res to send basic html immediately back if disable is enabled', () => {
