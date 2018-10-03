@@ -73,7 +73,7 @@ const serverRender = async ({
   const state = {}
   const component = props => renderRoutes(props.route.routes)
   const cleansedRoutes = [{ component, routes }]
-  const matchedRoutes = matchRoutes(cleansedRoutes, req.url)
+  const matchedRoutes = matchRoutes(cleansedRoutes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
   const dataCalls = findAllDataCalls(matchedRoutes, { req, res, url: parsedUrl.pathname })
