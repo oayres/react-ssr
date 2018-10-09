@@ -113,7 +113,7 @@ const serverRender = async ({
         await storePageInCache(redisClient, req.url, page, cache.duration)
       }
 
-      res.status(statusCode).send(page)
+      res.status(req.status || statusCode).send(page)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)
