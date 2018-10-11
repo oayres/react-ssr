@@ -67,6 +67,10 @@ const serverRender = async ({
       const cachedPage = await fetchPageFromCache(redisClient, key)
 
       if (cachedPage) {
+        if (cache.keyPrefix) {
+          res.set('X-Cache-Prefix', cache.keyPrefix)
+        }
+
         return res.status(200).send(cachedPage)
       }
     }
