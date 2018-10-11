@@ -38,7 +38,8 @@ const serverRender = async ({
   cache = {
     mode: 'none',
     duration: 1800,
-    redisClient: null
+    redisClient: null,
+    keyPrefix: ''
   }
 }, req, res) => {
   const urlWithoutQuery = req.url.split('?')[0]
@@ -60,8 +61,10 @@ const serverRender = async ({
 
   // does req.url include query parameters? do we want to cache routes with query parameters?
   if (safeToCache && hasRedis && cache && cache.mode === 'full') {
-    if (await redisClient.exists(req.url)) {
-      const cachedPage = await fetchPageFromCache(redisClient, req.url)
+    const key = `${cache.keyPrefix}${req.url}`
+
+    if (await redisClient.exists(key)) {
+      const cachedPage = await fetchPageFromCache(redisClient, key)
 
       if (cachedPage) {
         return res.status(200).send(cachedPage)
@@ -110,7 +113,9 @@ const serverRender = async ({
       const page = `<!DOCTYPE html>${wrapper}`
 
       if (safeToCache && hasRedis && cache && cache.mode === 'full') {
-        await storePageInCache(redisClient, req.url, page, cache.duration)
+        const { duration = 1800, keyPrefix = '' } = cache
+        const key = `${keyPrefix}${req.url}`
+        await storePageInCache(redisClient, key, page, duration)
       }
 
       res.status(req.status || statusCode).send(page)
