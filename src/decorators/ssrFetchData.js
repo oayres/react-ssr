@@ -33,7 +33,7 @@ const ssrFetchData = DecoratedComponent => {
     async fetchData () {
       try {
         const props = await executeFetchData(DecoratedComponent, this.props.match)
-        this.clientFetchedProps = props
+        this.clientFetchedProps = props[DecoratedComponent.displayName]
         this.error = false
         this.setState({ fetched: true })
       } catch (error) {
