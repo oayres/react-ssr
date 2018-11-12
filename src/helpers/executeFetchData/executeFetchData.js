@@ -21,7 +21,7 @@ const executeFetchData = async (component, match, req, res) => {
       try {
         response = await fetch
         const updatedKeys = Object.keys(response || {})
-        updatedKeys.forEach((key, index) => {
+        updatedKeys.forEach(key => {
           result[component.displayName][key] = response[key]
         })
       } catch (error) {
@@ -39,9 +39,10 @@ const executeFetchData = async (component, match, req, res) => {
     const responses = await Q.allSettled(keys.map(key => fetch[key]))
 
     responses.forEach((data, index) => {
-      result[component.displayName][keys[index]] = data.value
-
-      if (!data.value) {
+      if (data.value) {
+        result[component.displayName][keys[index]] = data.value
+      } else {
+        result[component.displayName][keys[index]] = data.reason
         debug(`fetchData #${index + 1} in ${component.displayName} returned undefined.`)
       }
     })
