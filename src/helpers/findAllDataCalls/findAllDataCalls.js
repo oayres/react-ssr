@@ -38,7 +38,7 @@ const findAllDataCalls = (matchedRoutes = [], options = {}) => {
   let promises = []
 
   matchedRoutes.forEach(matchedRoute => {
-    const { routeCalls = [] } = checkRoute({...options, match: matchedRoute.match}, matchedRoute.route)
+    const { routeCalls = [] } = checkRoute({ ...options, match: matchedRoute.match }, matchedRoute.route)
     promises = promises.concat(routeCalls)
   })
 

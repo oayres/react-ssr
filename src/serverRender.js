@@ -78,9 +78,9 @@ const serverRender = async ({
 
   const context = {}
   const state = {}
-  const component = props => renderRoutes(props.route.routes)
-  const cleansedRoutes = [{ component, routes }]
-  const matchedRoutes = matchRoutes(cleansedRoutes, urlWithoutQuery)
+  // const component = props => renderRoutes(props.route.routes)
+  // const cleansedRoutes = [{ component, routes }]
+  const matchedRoutes = matchRoutes(routes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
   const dataCalls = findAllDataCalls(matchedRoutes, { req, res, url: parsedUrl.pathname })
@@ -90,7 +90,7 @@ const serverRender = async ({
     debug('Parsed URL has no path name.')
   }
 
-  debug('Routes? ', cleansedRoutes)
+  debug('Routes? ', routes)
 
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
@@ -107,7 +107,7 @@ const serverRender = async ({
         <SSRProvider value={fetchedProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
-              {renderRoutes(cleansedRoutes)}
+              {renderRoutes(routes)}
             </StaticRouter>
           </Providers>
         </SSRProvider>
