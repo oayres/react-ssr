@@ -115,14 +115,15 @@ const serverRender = async ({
 
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
+      const status = req.status || statusCode
 
-      if (safeToCache && hasRedis && cache && cache.mode === 'full') {
+      if (safeToCache && hasRedis && cache && cache.mode === 'full' && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
       }
 
-      res.status(req.status || statusCode).send(page)
+      res.status(status).send(page)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)
