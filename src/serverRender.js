@@ -8,6 +8,7 @@ const { matchRoutes, renderRoutes } = require('react-router-config')
 const DefaultTemplate = require('./components/DefaultTemplate')
 const findAllDataCalls = require('./helpers/findAllDataCalls')
 const { SSRProvider } = require('./ssrContext')
+require('regenerator-runtime/runtime.js')
 
 const fetchPageFromCache = async (redisClient, key) => {
   let data
