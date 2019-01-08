@@ -118,7 +118,7 @@ const serverRender = async ({
       const page = `<!DOCTYPE html>${wrapper}`
       const status = req.status || statusCode
 
-      if (safeToCache && hasRedis && cache && cache.mode === 'full' && status < 300) {
+      if (safeToCache && hasRedis && cache && cache.mode === 'full' && status >= 200 && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
