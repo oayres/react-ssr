@@ -15,20 +15,20 @@ const ssrFetchData = DecoratedComponent => {
       this.error = false
     }
 
-    static getDerivedStateFromProps (nextProps, prevState) {
-      if (nextProps && !nextProps.disableFetchData) {
-        const { params = {} } = prevState
+    // static getDerivedStateFromProps (nextProps, prevState) {
+    //   if (nextProps && !nextProps.disableFetchData) {
+    //     const { params = {} } = prevState
 
-        if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
-          return { fetched: false, params }
-        }
-      }
+    //     if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
+    //       return { fetched: false, params }
+    //     }
+    //   }
 
-      return {
-        ...nextProps,
-        ...prevState
-      }
-    }
+    //   return {
+    //     ...nextProps,
+    //     ...prevState
+    //   }
+    // }
 
     async fetchData () {
       try {
@@ -69,7 +69,7 @@ const ssrFetchData = DecoratedComponent => {
 
             const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
             const error = this.error && !this.props.disableFetchData
-            return <DecoratedComponent {...this.props} {...componentProps} loading={loading} error={error} retryFetchData={this.fetchData} />
+            return <DecoratedComponent {...this.props} {...componentProps} loading={loading} error={error} retryFetchData={this.fetchData.bind(this)} />
           }}
         </SSRConsumer>
       )
