@@ -44,7 +44,7 @@ const ssrFetchData = DecoratedComponent => {
     }
 
     extractFromWindow () {
-      if (typeof window === 'undefined') {
+      if (typeof window !== 'undefined') {
         const { _dataFromServerRender = {} } = window.__STATE || {}
         return _dataFromServerRender[DecoratedComponent.displayName]
       }
