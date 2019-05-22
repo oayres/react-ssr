@@ -8,6 +8,7 @@ const { matchRoutes, renderRoutes } = require('react-router-config')
 const DefaultTemplate = require('./components/DefaultTemplate')
 const findAllDataCalls = require('./helpers/findAllDataCalls')
 const { SSRProvider } = require('./ssrContext')
+require('regenerator-runtime/runtime.js')
 
 const fetchPageFromCache = async (redisClient, key) => {
   let data
@@ -53,14 +54,16 @@ const serverRender = async ({
   const extensionRegex = /(?:\.([^.]+))?$/
   const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
-  const safeToCache = req.useCacheForRequest
+  const cacheActive = hasRedis && cache && cache.mode === 'full'
+  const readCache = cacheActive && (req.useCacheForRequest || req.readCache)
+  const writeCache = cacheActive && (req.useCacheForRequest || req.writeCache)
 
   if (extension) {
     return res.sendStatus(404)
   }
 
   // does req.url include query parameters? do we want to cache routes with query parameters?
-  if (safeToCache && hasRedis && cache && cache.mode === 'full') {
+  if (readCache) {
     const key = `${cache.keyPrefix}${req.url}`
 
     if (await redisClient.exists(key)) {
@@ -78,9 +81,9 @@ const serverRender = async ({
 
   const context = {}
   const state = {}
-  const component = props => renderRoutes(props.route.routes)
-  const cleansedRoutes = [{ component, routes }]
-  const matchedRoutes = matchRoutes(cleansedRoutes, urlWithoutQuery)
+  // const component = props => renderRoutes(props.route.routes)
+  // const cleansedRoutes = [{ component, routes }]
+  const matchedRoutes = matchRoutes(routes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
   const dataCalls = findAllDataCalls(matchedRoutes, { req, res, url: parsedUrl.pathname })
@@ -90,24 +93,30 @@ const serverRender = async ({
     debug('Parsed URL has no path name.')
   }
 
-  debug('Routes? ', cleansedRoutes)
+  debug('Routes? ', routes)
 
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
       debug('Fetched props... ', fetchedProps)
-      fetchedProps = fetchedProps.map(prop => prop.value)
 
-      if (fetchedProps.length) {
-        fetchedProps = fetchedProps.reduce((prop, props) => ({ ...props, ...prop }))
-      }
+      const filteredProps = {}
 
-      state._dataFromServerRender = fetchedProps
+      fetchedProps.forEach(props => {
+        const fetchedObject = props.value
+        const keyOfFetchedObject = Object.keys(fetchedObject)[0]
+        const objectOfFetchedValues = fetchedObject[keyOfFetchedObject]
+        if (!objectOfFetchedValues._excludeFromHydration) {
+          filteredProps[keyOfFetchedObject] = objectOfFetchedValues
+        }
+      })
+
+      state._dataFromServerRender = filteredProps
 
       const app = ReactDOMServer.renderToString((
         <SSRProvider value={fetchedProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
-              {renderRoutes(cleansedRoutes)}
+              {renderRoutes(routes)}
             </StaticRouter>
           </Providers>
         </SSRProvider>
@@ -115,14 +124,15 @@ const serverRender = async ({
 
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
+      const status = req.status || statusCode
 
-      if (safeToCache && hasRedis && cache && cache.mode === 'full') {
+      if (writeCache && status >= 200 && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
       }
 
-      res.status(req.status || statusCode).send(page)
+      res.status(status).send(page)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)

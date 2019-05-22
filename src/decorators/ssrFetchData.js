@@ -15,20 +15,20 @@ const ssrFetchData = DecoratedComponent => {
       this.error = false
     }
 
-    static getDerivedStateFromProps (nextProps, prevState) {
-      if (nextProps && !nextProps.disableFetchData) {
-        const { params = {} } = prevState
+    // static getDerivedStateFromProps (nextProps, prevState) {
+    //   if (nextProps && !nextProps.disableFetchData) {
+    //     const { params = {} } = prevState
 
-        if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
-          return { fetched: false, params }
-        }
-      }
+    //     if (Object.keys(params).length > 0 && params !== nextProps.match.params) {
+    //       return { fetched: false, params }
+    //     }
+    //   }
 
-      return {
-        ...nextProps,
-        ...prevState
-      }
-    }
+    //   return {
+    //     ...nextProps,
+    //     ...prevState
+    //   }
+    // }
 
     async fetchData () {
       try {
@@ -44,8 +44,12 @@ const ssrFetchData = DecoratedComponent => {
     }
 
     extractFromWindow () {
-      const { _dataFromServerRender = {} } = window.__STATE || {}
-      return _dataFromServerRender[DecoratedComponent.displayName]
+      if (typeof window !== 'undefined') {
+        const { _dataFromServerRender = {} } = window.__STATE || {}
+        return _dataFromServerRender[DecoratedComponent.displayName]
+      }
+
+      return null
     }
 
     render () {
@@ -56,17 +60,16 @@ const ssrFetchData = DecoratedComponent => {
       return (
         <SSRConsumer>
           {(props = {}) => {
-            let componentProps = props[DecoratedComponent.displayName]
-            componentProps = componentProps || this.clientFetchedProps || this.extractFromWindow()
+            const componentProps = props[DecoratedComponent.displayName] || this.clientFetchedProps || this.extractFromWindow()
 
-            if (!componentProps) {
+            if (!componentProps && !this.loaderRequired) {
               this.fetchData()
               this.loaderRequired = true
             }
 
             const loading = !this.state.fetched && this.loaderRequired && !this.props.disableFetchData
             const error = this.error && !this.props.disableFetchData
-            return <DecoratedComponent {...this.props} {...componentProps} loading={loading} error={error} />
+            return <DecoratedComponent {...this.props} {...componentProps} loading={loading} error={error} retryFetchData={this.fetchData.bind(this)} />
           }}
         </SSRConsumer>
       )
