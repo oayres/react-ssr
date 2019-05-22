@@ -8,6 +8,7 @@ const { matchRoutes, renderRoutes } = require('react-router-config')
 const DefaultTemplate = require('./components/DefaultTemplate')
 const findAllDataCalls = require('./helpers/findAllDataCalls')
 const { SSRProvider } = require('./ssrContext')
+require('regenerator-runtime/runtime.js')
 
 const fetchPageFromCache = async (redisClient, key) => {
   let data
@@ -80,9 +81,9 @@ const serverRender = async ({
 
   const context = {}
   const state = {}
-  const component = props => renderRoutes(props.route.routes)
-  const cleansedRoutes = [{ component, routes }]
-  const matchedRoutes = matchRoutes(cleansedRoutes, urlWithoutQuery)
+  // const component = props => renderRoutes(props.route.routes)
+  // const cleansedRoutes = [{ component, routes }]
+  const matchedRoutes = matchRoutes(routes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
   const dataCalls = findAllDataCalls(matchedRoutes, { req, res, url: parsedUrl.pathname })
@@ -92,7 +93,7 @@ const serverRender = async ({
     debug('Parsed URL has no path name.')
   }
 
-  debug('Routes? ', cleansedRoutes)
+  debug('Routes? ', routes)
 
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
@@ -109,7 +110,7 @@ const serverRender = async ({
         <SSRProvider value={fetchedProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
-              {renderRoutes(cleansedRoutes)}
+              {renderRoutes(routes)}
             </StaticRouter>
           </Providers>
         </SSRProvider>
@@ -117,14 +118,15 @@ const serverRender = async ({
 
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
+      const status = req.status || statusCode
 
-      if (writeCache) {
+      if (writeCache && status >= 200 && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
       }
 
-      res.status(req.status || statusCode).send(page)
+      res.status(status).send(page)
     })
     .catch(err => {
       res.status(400).send(`400: An error has occurred: ${err}`)
