@@ -98,11 +98,12 @@ const serverRender = async ({
 
       const filteredProps = {}
 
-      fetchedProps.forEach(prop => {
-        const obj = prop.value
-        const name = Object.keys(obj)[0]
-        if (!obj[name]._excludeFromHydration) {
-          filteredProps[name] = obj[name]
+      fetchedProps.forEach(props => {
+        const fetchedObject = props.value
+        const keyOfFetchedObject = Object.keys(fetchedObject)[0]
+        const objectOfFetchedValues = fetchedObject[keyOfFetchedObject]
+        if (!objectOfFetchedValues._excludeFromHydration) {
+          filteredProps[keyOfFetchedObject] = objectOfFetchedValues
         }
       })
 
