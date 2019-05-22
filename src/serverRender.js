@@ -101,7 +101,7 @@ const serverRender = async ({
       fetchedProps.forEach(prop => {
         const obj = prop.value
         const name = Object.keys(obj)[0]
-        if (!obj[name]._exclude) {
+        if (!obj[name]._excludeFromHydration) {
           _extends(filteredProps, obj)
         }
       })
