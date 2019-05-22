@@ -53,14 +53,16 @@ const serverRender = async ({
   const extensionRegex = /(?:\.([^.]+))?$/
   const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
-  const safeToCache = req.useCacheForRequest
+  const cacheActive = hasRedis && cache && cache.mode === 'full'
+  const readCache = cacheActive && (req.useCacheForRequest || req.readCache)
+  const writeCache = cacheActive && (req.useCacheForRequest || req.writeCache)
 
   if (extension) {
     return res.sendStatus(404)
   }
 
   // does req.url include query parameters? do we want to cache routes with query parameters?
-  if (hasRedis && cache && cache.mode === 'full') {
+  if (readCache) {
     const key = `${cache.keyPrefix}${req.url}`
 
     if (await redisClient.exists(key)) {
@@ -116,7 +118,7 @@ const serverRender = async ({
       const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
 
-      if (safeToCache && hasRedis && cache && cache.mode === 'full') {
+      if (writeCache) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
