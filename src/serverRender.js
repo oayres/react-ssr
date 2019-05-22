@@ -95,13 +95,18 @@ const serverRender = async ({
   Q.allSettled(dataCalls)
     .then(async fetchedProps => {
       debug('Fetched props... ', fetchedProps)
-      fetchedProps = fetchedProps.map(prop => prop.value)
 
-      if (fetchedProps.length) {
-        fetchedProps = fetchedProps.reduce((prop, props) => ({ ...props, ...prop }))
-      }
+      const filteredProps = {}
 
-      state._dataFromServerRender = fetchedProps
+      fetchedProps.forEach(prop => {
+        const obj = prop.value
+        const name = Object.keys(obj)[0]
+        if (!obj[name]._exclude) {
+          _extends(filteredProps, obj)
+        }
+      })
+
+      state._dataFromServerRender = filteredProps
 
       const app = ReactDOMServer.renderToString((
         <SSRProvider value={fetchedProps}>
