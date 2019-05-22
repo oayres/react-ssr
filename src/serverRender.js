@@ -60,7 +60,7 @@ const serverRender = async ({
   }
 
   // does req.url include query parameters? do we want to cache routes with query parameters?
-  if (safeToCache && hasRedis && cache && cache.mode === 'full') {
+  if (hasRedis && cache && cache.mode === 'full') {
     const key = `${cache.keyPrefix}${req.url}`
 
     if (await redisClient.exists(key)) {
