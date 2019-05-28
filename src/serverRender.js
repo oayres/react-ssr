@@ -113,7 +113,7 @@ const serverRender = async ({
       state._dataFromServerRender = filteredProps
 
       const app = ReactDOMServer.renderToString((
-        <SSRProvider value={fetchedProps}>
+        <SSRProvider value={filteredProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
               {renderRoutes(routes)}
