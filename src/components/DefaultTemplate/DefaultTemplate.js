@@ -1,4 +1,4 @@
-import React from 'react'
+const React = require('react')
 
 class Html extends React.Component {
   render () {
@@ -32,11 +32,11 @@ class Html extends React.Component {
           <link href='/assets/styles.css' rel='stylesheet' />
           <link rel='icon' type='image/x-icon' href='/favicon.ico' />
 
-          <script dangerouslySetInnerHTML={{__html: this.props.globals}} />
+          <script dangerouslySetInnerHTML={{ __html: this.props.globals }} />
         </head>
         <body {...bodyAttrs}>
           <div id='root'>{this.props.children}</div>
-          <script dangerouslySetInnerHTML={{__html: injectedState}} />
+          <script dangerouslySetInnerHTML={{ __html: injectedState }} />
           <script src='/assets/bundle.js' />
         </body>
       </html>
@@ -48,4 +48,4 @@ Html.defaultProps = {
   document: {}
 }
 
-export default Html
+module.exports = Html

@@ -1,4 +1,4 @@
-import fetchData from './fetchData'
+const fetchData = require('./fetchData')
 
 const fakeCall = (fakeThingToResolve) => {
   return new Promise((resolve, reject) => {
@@ -37,7 +37,7 @@ test('it populates the promises array with 2 promises if there is one in ssrWait
 test('it rejects with the expected error when fetchData is not a function', async () => {
   const component = { fetchData: 'invalid-thing' }
   const result = fetchData(component, {}, [])
-  await expect(result[0]).rejects.toEqual(
+  await expect(result[0]).resolves.toEqual(
     new Error('Fetch data not defined or not a function.')
   )
 })
@@ -47,11 +47,12 @@ test('it resolves with the expected props from a single fetchData', async () => 
   const component = {
     fetchData: function () {
       return fakeCall(data)
-    }
+    },
+    displayName: 'ExampleOne'
   }
 
   const result = fetchData(component, {}, [])
-  await expect(result[0]).resolves.toEqual({ defaultProps: data, fetchData: component.fetchData })
+  await expect(result[0]).resolves.toEqual({ ExampleOne: data })
 })
 
 test('it resolves multiple keys when returning an object of several promises', async () => {
@@ -62,9 +63,10 @@ test('it resolves multiple keys when returning an object of several promises', a
         one: fakeCall(data.one),
         two: fakeCall(data.two)
       }
-    }
+    },
+    displayName: 'ExampleTwo'
   }
 
   const result = fetchData(component, {}, [])
-  await expect(result[0]).resolves.toEqual({ defaultProps: data, fetchData: component.fetchData })
+  await expect(result[0]).resolves.toEqual({ ExampleTwo: data })
 })

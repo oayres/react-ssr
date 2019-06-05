@@ -1,4 +1,4 @@
-import DefaultTemplate from './DefaultTemplate'
+const DefaultTemplate = require('./DefaultTemplate')
 
 test('DefaultTemplate renders without exploding', () => {
   const wrapper = shallow(<DefaultTemplate />)

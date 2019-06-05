@@ -1,1 +1,1 @@
-export { default } from './fetchData'
+module.exports = require('./fetchData')

@@ -1,1 +1,2 @@
-export { default } from './findAllDataCalls'
+const findAllDataCalls = require('./findAllDataCalls')
+module.exports = findAllDataCalls
