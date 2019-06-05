@@ -122,7 +122,7 @@ const serverRender = async ({
         </SSRProvider>
       ))
 
-      const wrapper = ReactDOMServer.renderToString(<Html state={state}>{app}</Html>)
+      const wrapper = ReactDOMServer.renderToString(<Html state={state} expressRequest={req}>{app}</Html>)
       const page = `<!DOCTYPE html>${wrapper}`
       const status = req.status || statusCode
 
