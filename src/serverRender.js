@@ -100,6 +100,7 @@ const serverRender = async ({
       debug('Fetched props... ', fetchedProps)
 
       const filteredProps = {}
+      let preventCaching = false
 
       fetchedProps.forEach(props => {
         const fetchedObject = props.value
@@ -108,12 +109,13 @@ const serverRender = async ({
         if (!objectOfFetchedValues._excludeFromHydration) {
           filteredProps[keyOfFetchedObject] = objectOfFetchedValues
         }
+        if (objectOfFetchedValues._preventCaching) preventCaching = true
       })
 
       state._dataFromServerRender = filteredProps
 
       const app = ReactDOMServer.renderToString((
-        <SSRProvider value={fetchedProps}>
+        <SSRProvider value={filteredProps}>
           <Providers>
             <StaticRouter location={req.url} context={context}>
               {renderRoutes(routes)}
@@ -126,7 +128,7 @@ const serverRender = async ({
       const page = `<!DOCTYPE html>${wrapper}`
       const status = req.status || statusCode
 
-      if (writeCache && status >= 200 && status < 300) {
+      if (!preventCaching && writeCache && status >= 200 && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
         const key = `${keyPrefix}${req.url}`
         await storePageInCache(redisClient, key, page, duration)
