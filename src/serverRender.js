@@ -46,7 +46,7 @@ const serverRender = async ({
   const urlWithoutQuery = req.url.split('?')[0]
 
   if (disable || ignore.includes(urlWithoutQuery)) {
-    const html = ReactDOMServer.renderToString(<Html />)
+    const html = ReactDOMServer.renderToString(<Html expressRequest={req} />)
     return res.send(`<!DOCTYPE html>${html}`)
   }
 
