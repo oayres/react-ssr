@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import ReactDOMServer from 'react-dom/server'
-import StaticRouter from 'react-router-dom/StaticRouter'
+import { StaticRouter } from 'react-router-dom'
 const Q = require('q')
 const url = require('url')
 const debug = require('debug')('react-ssr:serverRender')

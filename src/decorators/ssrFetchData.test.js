@@ -1,5 +1,5 @@
 import React from 'react'
-import StaticRouter from 'react-router-dom/StaticRouter'
+import { StaticRouter } from 'react-router-dom'
 import ssrFetchData from './ssrFetchData'
 
 class Test extends React.Component {

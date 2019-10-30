@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "A simplified solution to React server side rendering.",
   "main": "lib/index.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "precompile": "rimraf lib",
     "compile": "babel src --out-dir lib",
     "build:main": "rollup --config config/rollup.config.js",
-    "build:hoc": "rollup --config config/rollup.client.config.js"
+    "build:hoc": "rollup --config config/rollup.client.config.js",
+    "lint": "standard"
   },
   "keywords": [
     "react",
