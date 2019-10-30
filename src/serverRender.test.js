@@ -1,3 +1,4 @@
+import React from 'react'
 import serverRender from './serverRender'
 jest.mock('debug')
 
@@ -5,7 +6,7 @@ test('calls res to send basic html immediately back if disable is enabled', () =
   const res = { send: jest.fn() }
   const options = {
     disable: true,
-    Html: 'div'
+    Html: () => <div />
   }
 
   serverRender(options, { url: '' }, res)
@@ -17,7 +18,7 @@ test('calls res to send basic html immediately back if disable is enabled', () =
 test('calls res to send basic html immediately back if url is in ignore array', () => {
   const res = { send: jest.fn() }
   const options = {
-    Html: 'div',
+    Html: () => <div />,
     ignore: ['/test']
   }
 
@@ -30,11 +31,11 @@ test('calls res to send basic html immediately back if url is in ignore array', 
 test('calls res to send basic html immediately back if url is stripped of query and is in ignore array', () => {
   const res = { send: jest.fn() }
   const options = {
-    Html: 'div',
+    Html: () => <div />,
     ignore: ['/test']
   }
 
-  serverRender(options, {url: '/test?exampleQuery=true'}, res)
+  serverRender(options, { url: '/test?exampleQuery=true' }, res)
 
   expect(res.send).toHaveBeenCalled()
   expect(res.send).toHaveBeenCalledWith(`<!DOCTYPE html><div data-reactroot=""></div>`)
@@ -46,7 +47,7 @@ test('it calls res.sendStatus with 404 status code when given path with extensio
     Html: 'div'
   }
 
-  serverRender(options, {url: '/test.js'}, res)
+  serverRender(options, { url: '/test.js' }, res)
 
   expect(res.sendStatus).toHaveBeenCalled()
   expect(res.sendStatus).toHaveBeenCalledWith(404)

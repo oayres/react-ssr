@@ -30,7 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "^3.2.5",
+    "debug": "^4.1.1",
     "hoist-non-react-statics": "^3.0.1",
     "q": "^1.5.1",
     "regenerator": "^0.13.2",
