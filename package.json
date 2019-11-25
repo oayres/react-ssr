@@ -1,17 +1,14 @@
 {
   "name": "react-ssr",
-  "version": "2.0.0-beta.5",
-  "description": "A simplified solution to React server side rendering.",
+  "version": "0.0.1",
+  "description": "A middle-man compromise between prerender and SSR.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "test:cover": "jest --coverage",
     "test:ci": "jest --coverage && codecov",
-    "build": "npm run build:main && npm run build:hoc",
     "precompile": "rimraf lib",
     "compile": "babel src --out-dir lib",
-    "build:main": "rollup --config config/rollup.config.js",
-    "build:hoc": "rollup --config config/rollup.client.config.js",
+    "build": "rollup --config config/rollup.client.config.js",
     "lint": "standard"
   },
   "keywords": [

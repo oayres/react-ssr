@@ -1,4 +1,3 @@
-import uglify from 'rollup-plugin-uglify'
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import includePaths from 'rollup-plugin-includepaths'
@@ -7,10 +6,8 @@ import path from 'path'
 const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'))
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}))
 
-console.info('External? ', external)
-
 export default {
-  input: 'src/decorators/ssrFetchData.js',
+  input: 'src/fetchData.js',
   output: {
     name: 'ssr-fetch-data',
     file: 'lib/fetchData.js',
@@ -30,6 +27,5 @@ export default {
         'node_modules/**'
       ]
     })
-    // uglify()
   ]
 }
