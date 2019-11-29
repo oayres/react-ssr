@@ -1,6 +1,6 @@
 {
   "name": "react-ssr",
-  "version": "2.0.0-beta.5",
+  "version": "2.0.0-beta.8",
   "description": "A simplified solution to React server side rendering.",
   "main": "lib/index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "debug": "^4.1.1",
     "hoist-non-react-statics": "^3.0.1",
     "q": "^1.5.1",
+    "qs": "^6.9.1",
     "regenerator": "^0.14.2",
     "url": "^0.11.0"
   },

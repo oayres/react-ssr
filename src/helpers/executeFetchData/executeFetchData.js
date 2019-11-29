@@ -1,10 +1,9 @@
 const Q = require('q')
-const debug = require('debug')('react-ssr:fetchData')
 require('regenerator-runtime/runtime.js')
 
 const executeFetchData = async (component, match, req, res) => {
   if (typeof component.fetchData !== 'function') {
-    debug(`fetchData is not a function or not static on ${component.displayName}`)
+    console.info(`fetchData is not a function or not static on ${component.displayName}`)
     return new Error('Fetch data not defined or not a function.')
   }
 
@@ -25,11 +24,11 @@ const executeFetchData = async (component, match, req, res) => {
           result[component.displayName][key] = response[key]
         })
       } catch (error) {
-        debug(`fetchData failed for ${component.displayName}`, error)
+        console.info(`fetchData failed for ${component.displayName}`, error)
         props.error = true
       }
     } catch (error) {
-      debug(`fetchData failed for ${component.displayName}`, error)
+      console.info(`fetchData failed for ${component.displayName}`, error)
     }
 
     return result
@@ -43,11 +42,11 @@ const executeFetchData = async (component, match, req, res) => {
         result[component.displayName][keys[index]] = data.value
       } else {
         result[component.displayName][keys[index]] = data.reason
-        debug(`fetchData #${index + 1} in ${component.displayName} returned undefined.`)
+        console.info(`fetchData #${index + 1} in ${component.displayName} returned undefined.`)
       }
     })
   } catch (error) {
-    debug(`fetchData failed for ${component.displayName}`, error)
+    console.info(`fetchData failed for ${component.displayName}`, error)
   }
 
   return result

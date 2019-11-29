@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
+import qs from 'qs'
 const Q = require('q')
 const url = require('url')
 const debug = require('debug')('react-ssr:serverRender')
@@ -40,23 +41,27 @@ const serverRender = async ({
     mode: 'none',
     duration: 1800,
     redisClient: null,
-    keyPrefix: ''
+    keyPrefix: '',
+    ignoreQueryParams: false,
+    queryParamsToKeep: []
   }
 }, req, res) => {
-  const urlWithoutQuery = req.url.split('?')[0]
+  const splitUrl = req.url.split('?')
+  const urlWithoutQuery = splitUrl[0]
 
   if (disable || ignore.includes(urlWithoutQuery)) {
     const html = ReactDOMServer.renderToString(<Html expressRequest={req} />)
     return res.send(`<!DOCTYPE html>${html}`)
   }
 
-  const { redisClient } = cache || {}
+  const { redisClient, ignoreQueryParams = false, queryParamsToKeep = [] } = cache || {}
   const extensionRegex = /(?:\.([^.]+))?$/
   const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
   const cacheActive = hasRedis && cache && cache.mode === 'full'
   const readCache = cacheActive && (req.useCacheForRequest || req.readCache)
   const writeCache = cacheActive && (req.useCacheForRequest || req.writeCache)
+  let urlForCache = ignoreQueryParams ? urlWithoutQuery : req.url
 
   if (extension) {
     return res.sendStatus(404)
@@ -64,7 +69,32 @@ const serverRender = async ({
 
   // does req.url include query parameters? do we want to cache routes with query parameters?
   if (readCache) {
-    const key = `${cache.keyPrefix}${req.url}`
+    const queryParams = splitUrl[1]
+
+    if (ignoreQueryParams && queryParamsToKeep.length && queryParams) {
+      const params = qs.parse(queryParams)
+      let queryString = ''
+
+      queryParamsToKeep.forEach((paramToKeepInCacheUrl, index) => {
+        const paramValue = params[paramToKeepInCacheUrl]
+
+        if (paramValue) {
+          if (queryString) {
+            queryString += '&' // adds & as multiple query params
+          }
+
+          queryString += `${paramToKeepInCacheUrl}=${paramValue}`
+        }
+      })
+
+      if (queryString) {
+        queryString = `?${queryString}`
+      }
+
+      urlForCache = `${urlWithoutQuery}${queryString}`
+    }
+
+    const key = `${cache.keyPrefix}${urlForCache}`
 
     if (await redisClient.exists(key)) {
       const cachedPage = await fetchPageFromCache(redisClient, key)
@@ -79,10 +109,6 @@ const serverRender = async ({
     }
   }
 
-  const context = {}
-  const state = {}
-  // const component = props => renderRoutes(props.route.routes)
-  // const cleansedRoutes = [{ component, routes }]
   const matchedRoutes = matchRoutes(routes, urlWithoutQuery)
   const lastRoute = matchedRoutes[matchedRoutes.length - 1] || {}
   const parsedUrl = url.parse(req.url) || {}
@@ -112,12 +138,14 @@ const serverRender = async ({
         if (objectOfFetchedValues._preventCaching) preventCaching = true
       })
 
-      state._dataFromServerRender = filteredProps
+      const state = {
+        _dataFromServerRender: JSON.parse(JSON.stringify(filteredProps))
+      }
 
       const app = ReactDOMServer.renderToString((
         <SSRProvider value={filteredProps}>
           <Providers>
-            <StaticRouter location={req.url} context={context}>
+            <StaticRouter location={req.url} context={{}}>
               {renderRoutes(routes)}
             </StaticRouter>
           </Providers>
@@ -130,7 +158,7 @@ const serverRender = async ({
 
       if (!preventCaching && writeCache && status >= 200 && status < 300) {
         const { duration = 1800, keyPrefix = '' } = cache
-        const key = `${keyPrefix}${req.url}`
+        const key = `${keyPrefix}${urlForCache}`
         await storePageInCache(redisClient, key, page, duration)
       }
 
