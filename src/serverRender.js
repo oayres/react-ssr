@@ -112,7 +112,7 @@ const serverRender = async ({
         if (objectOfFetchedValues._preventCaching) preventCaching = true
       })
 
-      state._dataFromServerRender = filteredProps
+      state._dataFromServerRender = JSON.parse(JSON.stringify(filteredProps))
 
       const app = ReactDOMServer.renderToString((
         <SSRProvider value={filteredProps}>
