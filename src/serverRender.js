@@ -42,6 +42,7 @@ const serverRender = async ({
     duration: 1800,
     redisClient: null,
     keyPrefix: '',
+    keySuffix: '',
     ignoreQueryParams: false,
     queryParamsToKeep: []
   }
@@ -59,8 +60,8 @@ const serverRender = async ({
   const extension = extensionRegex.exec(urlWithoutQuery)[1]
   const hasRedis = redisClient && typeof redisClient.exists === 'function' && typeof redisClient.get === 'function'
   const cacheActive = hasRedis && cache && cache.mode === 'full'
-  const readCache = cacheActive && (req.useCacheForRequest || req.readCache)
-  const writeCache = cacheActive && (req.useCacheForRequest || req.writeCache)
+  const readCache = cacheActive && (req.useCacheForRequest || res.locals.useSsrCacheForRequest || req.readCache)
+  const writeCache = cacheActive && (req.useCacheForRequest || res.locals.useSsrCacheForRequest || req.writeCache)
   let urlForCache = ignoreQueryParams ? urlWithoutQuery : req.url
 
   if (extension) {
@@ -94,14 +95,20 @@ const serverRender = async ({
       urlForCache = `${urlWithoutQuery}${queryString}`
     }
 
-    const key = `${cache.keyPrefix}${urlForCache}`
+    const uniqueKeySuffix = res.locals.ssrCacheKeySuffix || cache.keySuffix
+    const uniqueKeyPrefix = res.locals.ssrCacheKeyPrefix || cache.keyPrefix
+    const key = `${uniqueKeyPrefix}${urlForCache}${uniqueKeySuffix}`
 
     if (await redisClient.exists(key)) {
       const cachedPage = await fetchPageFromCache(redisClient, key)
 
       if (cachedPage) {
-        if (cache.keyPrefix) {
-          res.set('X-Cache-Prefix', cache.keyPrefix)
+        if (uniqueKeyPrefix) {
+          res.set('X-Cache-Prefix', uniqueKeyPrefix)
+        }
+
+        if (uniqueKeySuffix) {
+          res.set('X-Cache-Suffix', uniqueKeySuffix)
         }
 
         return res.status(200).send(cachedPage)
@@ -157,9 +164,10 @@ const serverRender = async ({
       const status = req.status || statusCode
 
       if (!preventCaching && writeCache && status >= 200 && status < 300) {
-        const { duration = 1800, keyPrefix = '' } = cache
-        const key = `${keyPrefix}${urlForCache}`
-        await storePageInCache(redisClient, key, page, duration)
+        const uniqueKeyPrefix = res.locals.ssrCacheKeyPrefix || cache.keyPrefix
+        const uniqueKeySuffix = res.locals.ssrCacheKeySuffix || cache.keySuffix
+        const key = `${uniqueKeyPrefix}${urlForCache}${uniqueKeySuffix}`
+        await storePageInCache(redisClient, key, page, cache.duration)
       }
 
       res.status(status).send(page)

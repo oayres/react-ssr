@@ -188,9 +188,25 @@ const renderer = ssr({
   cache: { // currently experimental - only accepts redis as a store
     mode: 'full|none', // full means entire page is cached
     duration: 1800, // cache duration in seconds, will rerender and set it again after this time for a given route
-    redisClient: null // optional redisClient - ioredis or node_redis - to use redis as store
+    redisClient: null, // optional redisClient - ioredis or node_redis - to use redis as store
+    keyPrefix: '', // prefix to prepend to your redis cache keys, which is req.url by default, can be set inline
+    keySuffix: '', // suffix to append to your redis cache keys, can be set inline
   }
 })
+```
+
+You can change your cache policy on-the-fly using middleware and also set the cache key suffix on-the-fly using middleware. This can be useful when you need flexibility on whether to cache or require a unique key based on feature flags being enabled on a given route, for example.
+
+```
+app.use((req, res, next) => {
+  if (userIsLoggedIn) {
+    res.locals.useSsrCacheForRequest = false
+  }
+
+  res.locals.ssrCacheKeyPrefix = 'tyrion' // redis key will now be `tyrion${req.url}`
+  res.locals.ssrCacheKeySuffix = 'drogon' // redis key will now be `tyrion${req.url}drogon` for given request
+})
+app.use(renderer)
 ```
 
 | Option        | Description                                           | Required | Default                                    |
